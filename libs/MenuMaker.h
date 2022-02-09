@@ -16,6 +16,7 @@ public:
     MenuMaker(char const *items[], int itemCount, ALIGNMENT align, bool skipFirstItem=true);
     ~MenuMaker();
     static string addSpaces(string source, int desiredLength, ALIGNMENT align);
+    static int strDisplayLen(const char* p);
     void showMenu(int selectedOption);
 };
 
@@ -47,9 +48,7 @@ MenuMaker::~MenuMaker()
  * @return string (the changed string or if desiredLength is not enough the source string)
  */
 string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align ) {
-    string ret;
-    ret="";
-    int len = source.length();
+    int len = strDisplayLen(source.c_str());
     int spaces = desiredLength-len;
     int margin;
     if (spaces < 0)
@@ -75,6 +74,17 @@ void MenuMaker::showMenu(int selectedOption ) {
         else
             cout << "  "<<menuItems.at(i)<<"  " <<endl;
     }
+}
+
+/**
+ * @brief Reports the display length of a utf-8 encoded string 
+ * * @return int
+ *         
+ */
+int MenuMaker::strDisplayLen(const char *s)
+{   int len=0;
+    while (*s) len += (*s++ & 0xc0) != 0x80;
+    return len;
 }
 
 #endif

@@ -10,8 +10,9 @@
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
             "args": [   "Lina1", 
-                        "Lina2", 
-                        "Lengri option numer 3"
+                        "Lína2", 
+                        "Lengri option numer 3",
+                        "Þetta er Guðjón"
                     ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

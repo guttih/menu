@@ -1,4 +1,5 @@
 // build params: gcc main.cpp -o main -lstdc++
+
 #include "libs/MenuMaker.h"
 #include <stdio.h>
 #include "vector"
@@ -18,22 +19,19 @@ void setCursorPos(int XPos, int YPos)
     COORD pos = {XPos, YPos};
     setCursorPos(pos);
 }
-
 COORD orgPos;
 
-
+// see also https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
 int main(int argc, char const *argv[])
 {   
-    MenuMaker menu(argv, argc, LEFT, true);
+    MenuMaker menu(argv, argc, CENTER, true);
     printf("Parameters\n");
     for(int i = 1; i< argc; i++){
         cout<<"\""<<argv[i]<<"\""<<endl;
     }
     printf("menu\n");
 
-    menu.showMenu(2);
     menu.showMenu(1);
-    
 
     return 0;
 }
