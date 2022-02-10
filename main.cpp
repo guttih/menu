@@ -26,11 +26,11 @@ using namespace std;
 int main(int argc, char const *argv[])
 {   
     MenuMaker menu(argv, argc, CENTER, true);
-    printf("Parameters\n");
-    for(int i = 1; i< argc; i++){
-        cout<<"\""<<argv[i]<<"\""<<endl;
-    }
-    printf("menu\n");
+    // printf("Parameters\n");
+    // for(int i = 1; i< argc; i++){
+    //     cout<<"\""<<argv[i]<<"\""<<endl;
+    // }
+    // printf("menu\n");
 
     int ret=menu.askUser(1);
     printf("Selected: %d\n", ret);

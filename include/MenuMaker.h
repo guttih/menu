@@ -21,7 +21,8 @@ public:
     ~MenuMaker();
     static string addSpaces(string source, int desiredLength, ALIGNMENT align);
     static int strDisplayLen(const char* p);
-    void showMenu(int selectedOption);
+    void showMenu();
+    void showSelection(int index);
     int askUser(int startSelection);
 };
 
@@ -72,7 +73,7 @@ string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align ) 
     }
 }
 
-void MenuMaker::showMenu(int selectedOption) {
+void MenuMaker::showMenu() {
     for(unsigned int i = 0; i < menuItems.size(); i++ ){
         printw("  %s  \n", menuItems.at(i).c_str());    
     }
@@ -91,25 +92,28 @@ int MenuMaker::strDisplayLen(const char *s)
     while (*s) len += (*s++ & 0xc0) != 0x80;
     return len;
 }
+void MenuMaker::showSelection(int index) {
+}
 int MenuMaker::askUser(int startSelection) {
     initscr();
     //raw();
-    showMenu(startSelection);
-    char c=getch();
+    showMenu();
+    showSelection(0);
+    char ch;
+    while ((ch = c = wgetch(menu_win);()) != 27) /* 27 = Esc key */
+    {
+        if (ch == 0 || ch == 224)
+            printf (", %d", getch ()); 
+        printf("\n");
+        ch=getch();
+    }
 
-    // while(c == -1)
-    // {
-    //     c=getch();
-    // }
 
-    printf("xxxxxx%c\n", c);    
+    
+    printf("xxxxxx%c\n", ch);    
 
-    // while ( c != 'q' && c !=17 ) {
-    //    c=getc();
-    //     printf("ignoring shet\n");
-    // }
     endwin();
-    printf ("%c\n", c);
+    printf ("%c\n", ch);
 
     return selected;
 }
