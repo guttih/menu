@@ -1,23 +1,28 @@
 #ifndef UTIL_H
 #define UTIL_H
-
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include <stdio.h>
+#include <ncurses.h>
 using namespace std;
 enum ALIGNMENT {LEFT, CENTER, RIGHT};
+
+
+
 
 class MenuMaker
 {
 private:
     vector <string> menuItems;
+    int selected=-1;
 public:
     MenuMaker(char const *items[], int itemCount, ALIGNMENT align, bool skipFirstItem=true);
     ~MenuMaker();
     static string addSpaces(string source, int desiredLength, ALIGNMENT align);
     static int strDisplayLen(const char* p);
-    void showMenu(int selectedOption);
+    void showMenu(int selectedOption, bool showingTheMenuForTheFirstTime);
+    int askUser(int startSelection);
 };
 
 MenuMaker::MenuMaker(char const *items[], int itemCount, ALIGNMENT align, bool skipFirstItem)
@@ -67,14 +72,19 @@ string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align ) 
     }
 }
 
-void MenuMaker::showMenu(int selectedOption ) {
+void MenuMaker::showMenu(int selectedOption, bool showingTheMenuForTheFirstTime) {
     for(int i = 0; i<menuItems.size(); i++ ){
         if (i==selectedOption)
-            cout << "> "<<menuItems.at(i)<<" <" <<endl;
+            //cout << "> "<<menuItems.at(i)<<" <" <<endl;
+            printf("> %s <\n", menuItems.at(i).c_str());    
         else
-            cout << "  "<<menuItems.at(i)<<"  " <<endl;
+            //cout << "  "<<menuItems.at(i)<<"  " <<endl;
+            printf("  %s  \n", menuItems.at(i).c_str());    
     }
 }
+
+
+
 
 /**
  * @brief Reports the display length of a utf-8 encoded string 
@@ -85,6 +95,28 @@ int MenuMaker::strDisplayLen(const char *s)
 {   int len=0;
     while (*s) len += (*s++ & 0xc0) != 0x80;
     return len;
+}
+int MenuMaker::askUser(int startSelection) {
+    showMenu(startSelection, true);
+    //initchr();
+    //raw();
+    char c=getch();
+
+    while(c == -1)
+    {
+        c=getch();
+    }
+
+    printf("xxxxxx%c\n", c);    
+
+    // while ( c != 'q' && c !=17 ) {
+    //    c=getc();
+    //     printf("ignoring shet\n");
+    // }
+    printf ("%c\n", c);
+    endwin();
+
+    return selected;
 }
 
 #endif
