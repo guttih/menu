@@ -21,7 +21,7 @@ public:
     ~MenuMaker();
     static string addSpaces(string source, int desiredLength, ALIGNMENT align);
     static int strDisplayLen(const char* p);
-    void showMenu(int selectedOption, bool showingTheMenuForTheFirstTime);
+    void showMenu(int selectedOption);
     int askUser(int startSelection);
 };
 
@@ -72,14 +72,9 @@ string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align ) 
     }
 }
 
-void MenuMaker::showMenu(int selectedOption, bool showingTheMenuForTheFirstTime) {
-    for(int i = 0; i<menuItems.size(); i++ ){
-        if (i==selectedOption)
-            //cout << "> "<<menuItems.at(i)<<" <" <<endl;
-            printf("> %s <\n", menuItems.at(i).c_str());    
-        else
-            //cout << "  "<<menuItems.at(i)<<"  " <<endl;
-            printf("  %s  \n", menuItems.at(i).c_str());    
+void MenuMaker::showMenu(int selectedOption) {
+    for(unsigned int i = 0; i < menuItems.size(); i++ ){
+        printw("  %s  \n", menuItems.at(i).c_str());    
     }
 }
 
@@ -97,15 +92,15 @@ int MenuMaker::strDisplayLen(const char *s)
     return len;
 }
 int MenuMaker::askUser(int startSelection) {
-    showMenu(startSelection, true);
-    //initchr();
+    initscr();
     //raw();
+    showMenu(startSelection);
     char c=getch();
 
-    while(c == -1)
-    {
-        c=getch();
-    }
+    // while(c == -1)
+    // {
+    //     c=getch();
+    // }
 
     printf("xxxxxx%c\n", c);    
 
@@ -113,8 +108,8 @@ int MenuMaker::askUser(int startSelection) {
     //    c=getc();
     //     printf("ignoring shet\n");
     // }
-    printf ("%c\n", c);
     endwin();
+    printf ("%c\n", c);
 
     return selected;
 }
