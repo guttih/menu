@@ -23,6 +23,7 @@ using namespace std;
 
 // see also https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
 // tutorial https://www.youtube.com/watch?v=2tWN6ntNo4w
+// https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/keys.html
 int main(int argc, char const *argv[])
 {   
     MenuMaker menu(argv, argc, CENTER, true);
@@ -33,7 +34,7 @@ int main(int argc, char const *argv[])
     // printf("menu\n");
 
     int ret=menu.askUser(1);
-    printf("Selected: %d\n", ret);
+    cout<<"Selected: "<<ret<<endl;
 
 
     return 0;
