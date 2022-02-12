@@ -5,15 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "gcc - Build and debug active file",
+            "name": "C/C++: g++ Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
             "args": [   "Lina1", 
-                        "Lína2", 
-                        "Lengri option numer 3",
-                        "Þetta er Guðjón"
-                    ],
+                "Lína2", 
+                "Þrír", 
+                "Þrjátíu og þrír",
+                "Þetta er Guðjón"
+            ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
@@ -31,7 +32,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: gcc build active file",
+            "preLaunchTask": "C/C++: g++ build active file",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]

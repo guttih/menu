@@ -1,8 +1,13 @@
-// build params: gcc main.cpp -o main -lstdc++
+// build params: gcc main.cpp -o main -lncursesw -lstdc++
 //sudo yum install ncurses-devel
-#include "include/MenuMaker.h"
+ #include "include/MenuMaker.h"
 #include <stdio.h>
 #include "vector"
+#include "wchar.h"
+#include <iostream>
+#include <string>
+#include <ncurses.h>
+#include <locale.h>
 using namespace std;
 // struct COORD
 // {
@@ -26,16 +31,17 @@ using namespace std;
 // https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/keys.html
 int main(int argc, char const *argv[])
 {   
-    MenuMaker menu(argv, argc, CENTER, true);
-    // printf("Parameters\n");
-    // for(int i = 1; i< argc; i++){
-    //     cout<<"\""<<argv[i]<<"\""<<endl;
-    // }
-    // printf("menu\n");
+    setlocale(LC_ALL, "");
+    MenuMaker menu(argv, argc, LEFT, true);
 
     int ret=menu.askUser(1);
-    cout<<"Selected: "<<ret<<endl;
-
-
+   
+    cout<<"Þetta er ekki bilað: "<<ret<<endl;
+ 
+ 
+    std::wstring widestr = L"Þroskahefta þrumrúnkugúrkur Þá";
+    printf("2 %ls %lu\n", widestr.c_str(), widestr.length());
+    wprintf(L"4 %ls \n", widestr.c_str());
+    wprintf(L"4 %s \n", widestr.c_str());
     return 0;
 }
