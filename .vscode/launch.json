@@ -10,6 +10,10 @@
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
             "args": [   
+                "-c",
+                "-",  
+                "--align",
+                "center", 
                 "-menu",
                 "Lina1", 
                 "Lína2", 

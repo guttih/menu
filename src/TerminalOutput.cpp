@@ -50,13 +50,17 @@ void TerminalOutput::printHelp(const char *appName)
     }
     //info about notation: https://www.youtube.com/watch?v=pXhcPJK5cMc (http://docopt.org/)
     println("Usage: ", str.c_str(), " [OPTIONS]...  -menu <menustring>...");
-    // println("Usage: ", str.c_str(), " -c ( <c1> | <c1> <c2> )  -menu <menustring>...");
+    println("Usage: ", str.c_str(), " -align ( <left> | <center> | <right> ) [OPTIONS]...  -menu <menustring>...");
+    println("Usage: ", str.c_str(), " -c ( <c1> | <c1> <c2> )  [OPTIONS]... -menu <menustring>...");
     // println("Usage: ", str.c_str(), " -selcolor ( green | red | white ) -menu <menustring>...");
     println("  Ask the user to select between options");
     println();
     println("OPTIONS       Option description");
     println("  -help       Prints this help page");
-    // println("  -c          Must be followed by one or two characters which will be added     ");
+    println(" --align      Alignment of menustrings this option must be followed by one");
+    println("              these words left, center or right.  Default is left");
+    println("  -c          Must be followed by one or two characters which will be added     ");
+    println("  -q          Do not print selection number");
     // println("              in front and behind the selected menustring.");
     // println("  -selcolor   Color of the selected menustring");
     println
@@ -65,8 +69,8 @@ void TerminalOutput::printHelp(const char *appName)
     println("  -menu       This command must be followed by one or more menustring");
     println();
     println("ARGUMENTS     Argument description");
-    // println("  c1          Character in front of or surrounding selected menustring.");
-    // println("  c2          Character at end of the selected menustring.");
+    println("  c1          Character in front of or surrounding selected menustring.");
+    println("  c2          Character at end of the selected menustring.");
     println("  menustring  Must be a double quoted string.");
     println();
 }

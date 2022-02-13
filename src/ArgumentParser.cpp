@@ -17,7 +17,8 @@ void ArgumentParser::parseArguments()
     {
         if (foundMenuOption)
         {
-            menuItems.push_back(it->c_str());
+
+            _menuItems.push_back(it->c_str());
             _arguments.erase(it--);
         }
         else if (*it == "-menu")
@@ -28,36 +29,89 @@ void ArgumentParser::parseArguments()
         else if (*it == "--help" || *it == "-help" || *it == "-h")
         {
             _optHelp = true;
+            return;
+        }
+         else if (*it == "-q" || *it == "-quiet")
+        {
+            _optQuiet=true;
+        }
+        else if (*it == "--align")
+        {
+            it++;
+            if (it == _arguments.end() || (*it != "left" && *it != "center" && *it != "right"))
+            {
+                _optInvalid = true;
+                _errorString = "--align must be followed by one of these keywords left, center or right.";
+                return;
+            }
+            if (*it == "right")
+                _alignment = RIGHT;
+            else
+                _alignment = *it == "center" ? CENTER : LEFT;
+        } // else if (*it == "--align")
+        else if (*it == "-c")
+        {
+            it++;
+            _optSelectSymbol=true;
+            if (it->length() != 1)
+            {
+                _optInvalid = true;
+                _errorString = "-c must be followed by a character";
+                return;
+            }
+            _selectSymbolEnd = _selectSymbolFront = it->at(0);
+            it++;
+            if (it->length() == 1){
+                _selectSymbolEnd=it->at(0);
+            } else {
+                //No end symbol, will be using same in front and back
+                it--;
+            }
         }
         else
         {
             _optInvalid = true;
-            _errorString=*it;
+            _errorString = *it;
+            return;
         }
     }
-    if (_arguments.size() == 0 && !foundMenuOption) {
+    if (_arguments.size() == 0 && !foundMenuOption)
+    {
         _optInvalid = true;
-        _errorString="No arguments provided";
-    } else if (menuItems.size() == 0 ) {
+        _errorString = "No arguments provided";
+    }
+    else if (_menuItems.size() == 0)
+    {
         _optInvalid = true;
-        _errorString="No menu option provided";
+        _errorString = "No menu option provided";
     }
 }
 ArgumentParser::~ArgumentParser()
 {
 }
 
-vector<string> ArgumentParser::getOptions()
+vector<string> ArgumentParser::getMenuOptions()
 {
-    return menuItems;
+    return _menuItems;
 }
 
 /**
  * @brief Get Invalid pargument
- * 
+ *
  * @return const char* The invalid argument, if no invalid argument NULL is returned
  */
-const char * ArgumentParser::errorString()
+const char *ArgumentParser::errorString()
 {
     return _optInvalid ? _errorString.c_str() : NULL;
+}
+
+/**
+ * @brief Get the symbol that represents selected menu string.
+ * 
+ * @param frontSymbol - true if front symbol, false if end symbol
+ * @return char 
+ */
+char ArgumentParser::getSelectSymbol(bool frontSymbol)
+{
+    return frontSymbol ? _selectSymbolFront : _selectSymbolEnd;
 }

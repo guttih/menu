@@ -8,13 +8,14 @@ is selected then the return value is bigger than 0.
 
 ### Usage
     Provide the available options in a double quoted parameters. 
+    
  ```bash
 declare exe="out/menu"
 
 if [ ! -f "$exe" ]; then  echo "Error excutable does not exist"; exit 1; fi;
 
 
-$exe  "Option 1" "Option two"  "And some word in Icelandic, Á íslensku"
+$exe  -menu "Option 1" "Option two"  "And some word in Icelandic, á íslensku"
 case $? in
 
     0) echo "Nothing was selected" ;;

@@ -19,7 +19,7 @@ printHelp() {
     echo
 }
 
-#Function: parseOptions()
+#Function: parseOption s()
 #
 #Brief: Checks if all options are correct and saves them to variables
 #

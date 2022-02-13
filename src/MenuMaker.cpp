@@ -5,7 +5,7 @@ MenuMaker::MenuMaker(vector<string> options, ALIGNMENT align)
     addItems(options, align);
 }
 
-void MenuMaker::addItem(string item, ALIGNMENT align)
+void MenuMaker::addItem(string item)
 {
     int displayLen = strDisplayLen(item.c_str());
     if (displayLen > _itemDisplayWidth)
@@ -23,10 +23,10 @@ void MenuMaker::addItem(string item, ALIGNMENT align)
 int MenuMaker::addItems(vector<string> options, ALIGNMENT align)
 {
     int added = 0;
-
+    this->_align=align;
     for (vector<string>::iterator it = options.begin(); it != options.end(); it++)
     {
-        this->addItem(*it, align);
+        this->addItem(*it);
         added++;
     }
 
@@ -103,7 +103,7 @@ void MenuMaker::showSelection(int index)
         surroundItemWith(lastIndex, ' ', ' ');
     }
     lastIndex = index;
-    surroundItemWith(index, '>', '<');
+    surroundItemWith(index, _selectionSymbolFront, _selectionSymbolEnd);
 }
 int MenuMaker::askUser(int startSelection)
 {

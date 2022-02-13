@@ -24,6 +24,8 @@ private:
     vector<string> _menuItems;
     int _selected = -1;
     int _itemDisplayWidth = 0;
+    char _selectionSymbolFront='>';
+    char _selectionSymbolEnd  ='<';
     void surroundItemWith(int itemIndex, char front, char back);
     int getAlignIndex(string source, int desiredLength, ALIGNMENT align, bool oddAlignmentSpaceInFront);
 
@@ -36,8 +38,9 @@ public:
     void showMenu();
     void showSelection(int index);
     int askUser(int startSelection);
-    void addItem(string, ALIGNMENT align);
+    void addItem(string);
     int addItems(vector<string> options, ALIGNMENT align);
+    void setSurroundingSymbols(char front, char end){ _selectionSymbolFront=front; _selectionSymbolEnd=end;}
 };
 
 
