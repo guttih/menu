@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <ncurses.h>
 
+#pragma once
+
 using namespace std;
 
 enum ALIGNMENT
