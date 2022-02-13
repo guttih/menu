@@ -1,23 +1,36 @@
 #include "include/MenuMaker.h"
 
-
-
-MenuMaker::MenuMaker(char const *items[], int itemCount, ALIGNMENT align, bool skipFirstItem)
+MenuMaker::MenuMaker(vector<string> options, ALIGNMENT align)
 {
-    unsigned int longestText = 0,
-                 displayLen = 0;
-    for (int i = skipFirstItem; i < itemCount; i++)
+    addItems(options, align);
+}
+
+void MenuMaker::addItem(string item, ALIGNMENT align)
+{
+    int displayLen = strDisplayLen(item.c_str());
+    if (displayLen > _itemDisplayWidth)
+        _itemDisplayWidth = displayLen;
+
+    _menuItems.push_back(item.c_str());
+}
+
+/**
+ * @brief Adds menu options to the menu
+ *
+ * @param options collection of strings to add to the menu
+ * @return int The number of items added
+ */
+int MenuMaker::addItems(vector<string> options, ALIGNMENT align)
+{
+    int added = 0;
+
+    for (vector<string>::iterator it = options.begin(); it != options.end(); it++)
     {
-        menuItems.push_back(items[i]);
-        displayLen = strDisplayLen(items[i]);
-        if (displayLen > longestText)
-            longestText = displayLen;
+        this->addItem(*it, align);
+        added++;
     }
-    for (unsigned int i = 0; i < menuItems.size(); i++)
-    {
-        menuItems.at(i) = addSpaces(menuItems.at(i), longestText, align);
-    }
-    itemDisplayWidth = longestText;
+
+    return added;
 }
 
 MenuMaker::~MenuMaker()
@@ -25,31 +38,30 @@ MenuMaker::~MenuMaker()
 }
 
 /**
- * @brief Changes the length of a string to disiredLength,
- *        by adding spaces in front of or/and at end of string.
+ * @brief Calculates the offset of a text to be aligned.
  *
- * @param source The string to be changed
- * @param desiredLength How long should the string be after conversion
- * @param align should spaces be added in front of-, at end of- or both.
- * @return string (the changed string or if desiredLength is not enough the source string)
+ * @param source                   - Text to be aligned.
+ * @param desiredLength            - What is widest string this alignment should refer to.
+ * @param align                    - Align to the LEFT, CENTER or RIGHT.
+ * @param oddAlignmentSpaceInFront - When text is to be centered and there is one extra
+ *                                   space, do you want it in front or back of the text?
+ * @return int an integer representing the offset, where this string should be printed with.
  */
-string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align)
+int MenuMaker::getAlignIndex(string source, int desiredLength, ALIGNMENT align, bool oddAlignmentSpaceInFront)
 {
     int len = strDisplayLen(source.c_str());
     int spaces = desiredLength - len;
-    if (spaces < 0)
-        return source; // no change, not  desired length not enough
+    if (spaces < 0 || align == LEFT)
+        return 0;
 
-    if (align == LEFT)
-        return source + string(spaces, ' ');
-    else if (align == RIGHT)
-        return string(spaces, ' ') + source;
+    if (align == RIGHT)
+        return spaces;
     else
     {
         // CENTER
         bool isOdd = (spaces % 2 != 0);
         spaces /= 2;
-        return string(spaces, ' ') + source + string(spaces + isOdd, ' ');
+        return spaces + (isOdd & oddAlignmentSpaceInFront);
     }
 }
 /**
@@ -59,7 +71,7 @@ string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align)
  */
 int MenuMaker::strDisplayLen(const char *s)
 {
-    //return 30;
+    // return 30;
     int len = 0;
     while (*s)
         len += (*s++ & 0xc0) != 0x80;
@@ -68,16 +80,20 @@ int MenuMaker::strDisplayLen(const char *s)
 
 void MenuMaker::showMenu()
 {
-    for (unsigned int i = 0; i < menuItems.size(); i++)
+    int offset;
+    const char *str;
+    for (unsigned int i = 0; i < _menuItems.size(); i++)
     {
-        mvprintw(i, 1, "%s", menuItems.at(i).c_str());
+        str = _menuItems.at(i).c_str();
+        offset = getAlignIndex(str, _itemDisplayWidth, _align, true);
+        mvprintw(i, 1 + offset, "%s", str);
     }
 }
 
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
     mvprintw(itemIndex, 0, "%c", front);
-    mvprintw(itemIndex, itemDisplayWidth+1, "%c", back);
+    mvprintw(itemIndex, _itemDisplayWidth + 1, "%c", back);
 }
 void MenuMaker::showSelection(int index)
 {
@@ -101,12 +117,12 @@ int MenuMaker::askUser(int startSelection)
     showMenu();
     showSelection(0);
     refresh();
-    int maxPos = this->menuItems.size() - 1;
+    int maxPos = this->_menuItems.size() - 1;
     int pos = 0;
 
     int selected = -1;
     int ch = ' ';
-    while (ch != 'q' && ch != 27 && selected == -1 )
+    while (ch != 'q' && ch != 27 && selected == -1)
     {
         ch = getch();
         switch (ch)
@@ -140,7 +156,7 @@ int MenuMaker::askUser(int startSelection)
     }
 
     clrtoeol();
-    move(0,0);
+    move(0, 0);
     refresh();
     endwin();
     return selected;
