@@ -1,5 +1,6 @@
 #ifndef MENUMAKER_H
 #define MENUMAKER_H
+
 #include <iostream>
 #include <string>
 #include <vector>

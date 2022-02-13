@@ -9,7 +9,8 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [   "Lina1", 
+            "args": [   
+                "Lina1", 
                 "Lína2", 
                 "Þrír", 
                 "Þrjátíu og þrír",

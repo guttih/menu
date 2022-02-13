@@ -4,12 +4,14 @@
 
 MenuMaker::MenuMaker(char const *items[], int itemCount, ALIGNMENT align, bool skipFirstItem)
 {
-    unsigned int longestText = 0;
+    unsigned int longestText = 0,
+                 displayLen = 0;
     for (int i = skipFirstItem; i < itemCount; i++)
     {
         menuItems.push_back(items[i]);
-        if (menuItems.at(i - 1).length() > longestText)
-            longestText = menuItems.at(i - 1).length();
+        displayLen = strDisplayLen(items[i]);
+        if (displayLen > longestText)
+            longestText = displayLen;
     }
     for (unsigned int i = 0; i < menuItems.size(); i++)
     {
@@ -68,14 +70,14 @@ void MenuMaker::showMenu()
 {
     for (unsigned int i = 0; i < menuItems.size(); i++)
     {
-        mvprintw(1 + i, 1, "%s", menuItems.at(i).c_str());
+        mvprintw(i, 1, "%s", menuItems.at(i).c_str());
     }
 }
 
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
-    mvprintw(1 + itemIndex, 0, "%c", front);
-    mvprintw(1 + itemIndex, itemDisplayWidth+1, "%c", back);
+    mvprintw(itemIndex, 0, "%c", front);
+    mvprintw(itemIndex, itemDisplayWidth+1, "%c", back);
 }
 void MenuMaker::showSelection(int index)
 {
@@ -90,21 +92,15 @@ void MenuMaker::showSelection(int index)
 int MenuMaker::askUser(int startSelection)
 {
     // WINDOW *menu_win;
-    setlocale(LC_ALL, "");
     initscr();
-    // raw();
     clear();
     noecho();
     curs_set(0);
-    //cbreak();
-    // menu_win = newwin((menuItems.size() > 30 ? menuItems.size() + 2 : 32), itemDisplayWidth + 4, 0, 0);
     keypad(stdscr, true);
-    mvprintw(0, 0, "Þetta er shitUse arrow keys to select");
     refresh();
     showMenu();
     showSelection(0);
     refresh();
-    // refresh();
     int maxPos = this->menuItems.size() - 1;
     int pos = 0;
 
