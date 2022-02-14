@@ -68,6 +68,19 @@ void ArgumentParser::parseArguments()
                 it--;
             }
         }
+        else if (*it == "-cq")
+        {
+            _optSelectSymbol=true;
+            _selectSymbolEnd = _selectSymbolFront=' ';
+        }
+        else if (*it == "-highlight")
+        {
+            _optSelectHighlight=true;
+        }
+        else if (*it == "-box")
+        {
+            _optBox=true;
+        }
         else
         {
             _optInvalid = true;

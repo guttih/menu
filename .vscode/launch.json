@@ -12,6 +12,8 @@
             "args": [   
                 "-c",
                 "-",  
+                "-box",
+                "-highlight",
                 "--align",
                 "center", 
                 "-menu",

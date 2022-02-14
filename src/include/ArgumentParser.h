@@ -18,6 +18,8 @@ private:
     bool _optInvalid = false;
     bool _optSelectSymbol = false;
     bool _optQuiet = false;
+    bool _optSelectHighlight=false;
+    bool _optBox=false;
     ALIGNMENT _alignment = LEFT;
     string _errorString;
     char _selectSymbolFront = '*';
@@ -31,6 +33,8 @@ public:
     char getSelectSymbol(bool frontSymbol);
     bool isPrintHelp() { return _optHelp; }
     bool isQuiet() { return _optQuiet; }
+    bool isHighlight() { return _optSelectHighlight; }
+    bool isBox() { return _optBox; }
     const char *errorString();
     ArgumentParser(char const *items[], int itemCount);
     ALIGNMENT getAlignment(){return _alignment;};

@@ -58,9 +58,12 @@ void TerminalOutput::printHelp(const char *appName)
     println("OPTIONS       Option description");
     println("  -help       Prints this help page");
     println(" --align      Alignment of menustrings this option must be followed by one");
-    println("              these words left, center or right.  Default is left");
-    println("  -c          Must be followed by one or two characters which will be added     ");
+    println("              these words left, center or right.  Default is left.");
+    println("  -c          Must be followed by one or two characters which will be added.");
+    println("  -cq         No selection characters will be displayed in front and at end selected text.");
+    println("  -highlight  The selected text will be highlighted.");
     println("  -q          Do not print selection number");
+    println("  -box        Surround menu with a box.");
     // println("              in front and behind the selected menustring.");
     // println("  -selcolor   Color of the selected menustring");
     println

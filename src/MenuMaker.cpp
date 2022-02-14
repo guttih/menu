@@ -23,7 +23,7 @@ void MenuMaker::addItem(string item)
 int MenuMaker::addItems(vector<string> options, ALIGNMENT align)
 {
     int added = 0;
-    this->_align=align;
+    this->_align = align;
     for (vector<string>::iterator it = options.begin(); it != options.end(); it++)
     {
         this->addItem(*it);
@@ -78,45 +78,91 @@ int MenuMaker::strDisplayLen(const char *s)
     return len;
 }
 
+void MenuMaker::showItem(unsigned int itemIndex)
+{
+    const char *str = _menuItems.at(itemIndex).c_str();
+    int offset = getAlignIndex(str, _itemDisplayWidth, _align, true);
+    if (_window)
+        mvwprintw(_window, 1 + itemIndex, 2 + offset, "%s", str);
+    else
+        mvprintw(itemIndex, 1 + offset, "%s", str);
+}
 void MenuMaker::showMenu()
 {
-    int offset;
-    const char *str;
     for (unsigned int i = 0; i < _menuItems.size(); i++)
     {
-        str = _menuItems.at(i).c_str();
-        offset = getAlignIndex(str, _itemDisplayWidth, _align, true);
-        mvprintw(i, 1 + offset, "%s", str);
+        showItem(i);
     }
 }
 
+void MenuMaker::surroundItemClear(int itemIndex)
+{
+    char clear = ' ';
+    if (_window)
+    {
+        if (_highLightSelection)
+        {
+            showItem(itemIndex);
+        }
+        mvwprintw(_window, 1 + itemIndex, 1, "%c", clear);
+        mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", clear);
+    }
+    else
+    {
+        mvprintw(itemIndex, 0, "%c", clear);
+        mvprintw(itemIndex, _itemDisplayWidth + 1, "%c", clear);
+    }
+}
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
-    mvprintw(itemIndex, 0, "%c", front);
-    mvprintw(itemIndex, _itemDisplayWidth + 1, "%c", back);
+    if (_window)
+    {
+        if (_highLightSelection)
+        {
+
+            wattron(_window, A_STANDOUT);
+            showItem(itemIndex);
+            wattroff(_window, A_STANDOUT);
+        }
+        mvwprintw(_window, 1 + itemIndex, 1, "%c", front);
+        mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", back);
+    }
+    else
+    {
+        mvprintw(itemIndex, 0, "%c", front);
+        mvprintw(itemIndex, _itemDisplayWidth + 1, "%c", back);
+    }
 }
 void MenuMaker::showSelection(int index)
 {
     static int lastIndex = -1;
+
     if (lastIndex > -1)
     {
-        surroundItemWith(lastIndex, ' ', ' ');
+        surroundItemClear(lastIndex);
     }
     lastIndex = index;
     surroundItemWith(index, _selectionSymbolFront, _selectionSymbolEnd);
 }
 int MenuMaker::askUser(int startSelection)
 {
-    // WINDOW *menu_win;
+    bool useStandardScreen = false;
+    // https://techlister.com/linux/creating-menu-with-ncurses-in-c/
+    int height = _menuItems.size() + 2,
+        width = _itemDisplayWidth + 4;
     initscr();
-    clear();
+    _window = useStandardScreen ? stdscr : newwin(height, width, 1, 1);
+    if (_showBox)
+        box(_window, 0, 0);
+    // clear();
     noecho();
     curs_set(0);
-    keypad(stdscr, true);
-    refresh();
+    keypad(_window, true);
+    wrefresh(_window);
     showMenu();
     showSelection(0);
-    refresh();
+    // wattron( _window, A_STANDOUT ); /*highlights the first item.*/ wattroff( _window, A_STANDOUT );
+    wrefresh(_window);
     int maxPos = this->_menuItems.size() - 1;
     int pos = 0;
 
@@ -124,40 +170,40 @@ int MenuMaker::askUser(int startSelection)
     int ch = ' ';
     while (ch != 'q' && ch != 27 && selected == -1)
     {
-        ch = getch();
+        ch = wgetch(_window);
         switch (ch)
         {
         case KEY_UP:
             pos = pos > 1 ? pos - 1 : 0;
             showSelection(pos);
-            refresh();
+            wrefresh(_window);
             break;
         case KEY_DOWN:
             pos = pos < maxPos ? pos + 1 : maxPos;
             showSelection(pos);
-            refresh();
+            wrefresh(_window);
             break;
         case KEY_LEFT:
             pos = 0;
             showSelection(pos);
-            refresh();
+            wrefresh(_window);
             break;
         case KEY_RIGHT:
             pos = maxPos;
             showSelection(pos);
-            refresh();
+            wrefresh(_window);
             break;
         case 10:
             printw("end line");
-            refresh();
+            wrefresh(_window);
             selected = pos;
             break;
         }
     }
 
-    clrtoeol();
-    move(0, 0);
-    refresh();
+    // clrtoeol();
+    delwin(_window);
     endwin();
+    _window = NULL;
     return selected;
 }

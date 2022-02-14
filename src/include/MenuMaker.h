@@ -26,21 +26,28 @@ private:
     int _itemDisplayWidth = 0;
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
+    bool _highLightSelection=true;
+    bool _showBox=false;
+    WINDOW *_window = NULL;
+    void surroundItemClear(int itemIndex);
     void surroundItemWith(int itemIndex, char front, char back);
+    void showItem(unsigned int itemIndex);
     int getAlignIndex(string source, int desiredLength, ALIGNMENT align, bool oddAlignmentSpaceInFront);
+    static string addSpaces(string source, int desiredLength, ALIGNMENT align);
+    static int strDisplayLen(const char *p);
+    void showMenu();
+    void showSelection(int index);
 
 public:
     ALIGNMENT _align=CENTER;
     MenuMaker(vector<string>options, ALIGNMENT align);
     ~MenuMaker();
-    static string addSpaces(string source, int desiredLength, ALIGNMENT align);
-    static int strDisplayLen(const char *p);
-    void showMenu();
-    void showSelection(int index);
     int askUser(int startSelection);
     void addItem(string);
     int addItems(vector<string> options, ALIGNMENT align);
-    void setSurroundingSymbols(char front, char end){ _selectionSymbolFront=front; _selectionSymbolEnd=end;}
+    void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
+    void setHighlightSelection(bool highlight)      { _highLightSelection=highlight; }
+    void setShowBox(bool show)                      { _showBox=show; }
 };
 
 

@@ -25,6 +25,8 @@ int main(int argc, char const *argv[])
     MenuMaker menu(parser.getMenuOptions(), parser.getAlignment());
     if (parser.isSelectSymbol())
         menu.setSurroundingSymbols(parser.getSelectSymbol(true), parser.getSelectSymbol(false));
+    menu.setHighlightSelection(parser.isHighlight());
+    menu.setShowBox(parser.isBox());
 
     int ret = menu.askUser(1);
     if (!parser.isQuiet())
