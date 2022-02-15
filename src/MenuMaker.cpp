@@ -115,8 +115,11 @@ void MenuMaker::surroundItemClear(int itemIndex)
     char clear = ' ';
     if (_window)
     {
+        wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
+        showItem(itemIndex);
         mvwprintw(_window, 1 + itemIndex, 1, "%c", clear);
         mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", clear);
+        
     }
     else
     {
