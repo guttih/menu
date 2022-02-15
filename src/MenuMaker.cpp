@@ -94,29 +94,28 @@ int MenuMaker::strDisplayLen(const char *s)
 
 void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
 {
-    const char *str;
     int offset;
     string temp;
     if (addSpacesAroundItem) {
         temp=addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth, _align); 
-        str=temp.c_str();
         offset=0;
     }
     else {
-        str=_menuItems.at(itemIndex).c_str();
-        getAlignIndex(str, _itemDisplayWidth, _align, true);
+        temp=_menuItems.at(itemIndex);
+        offset=getAlignIndex(temp.c_str(), _itemDisplayWidth, _align, true);
     }
 
     if (_window)
-        mvwprintw(_window, 1 + itemIndex, 2 + offset, "%s", str);
+        mvwprintw(_window, 1 + itemIndex, 2 + offset, "%s", temp.c_str());
     else
-        mvprintw(itemIndex, 1 + offset, "%s", str);
+        mvprintw(itemIndex, 1 + offset, "%s", temp.c_str());
 }
 void MenuMaker::showMenu()
 {
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     for (unsigned int i = 0; i < _menuItems.size(); i++)
     {
+        surroundItemClear(i);
         showItem(i, true);
     }
 }

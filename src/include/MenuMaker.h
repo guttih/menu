@@ -44,9 +44,9 @@ private:
     static int strDisplayLen(const char *p);
     void showMenu();
     void showSelection(int index);
+    ALIGNMENT _align=CENTER;
 
 public:
-    ALIGNMENT _align=CENTER;
     MenuMaker(vector<string>options, ALIGNMENT align);
     ~MenuMaker();
     int askUser(int startSelection);
@@ -56,6 +56,7 @@ public:
     void setShowBox(bool show)                      { _showBox=show; }
     void setMenuColor(COLORPAIR pair);
     void setSelectionColor(COLORPAIR pair);
+    void setAlignment(ALIGNMENT align){ _align=align;}
 };
 
 
