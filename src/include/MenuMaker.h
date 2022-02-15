@@ -38,7 +38,7 @@ private:
     COLORPAIR _colorMenu     = { -1, -1 }; 
     void surroundItemClear(int itemIndex);
     void surroundItemWith(int itemIndex, char front, char back);
-    void showItem(unsigned int itemIndex);
+    void showItem(unsigned int itemIndex, bool addSpaces);
     int getAlignIndex(string source, int desiredLength, ALIGNMENT align, bool oddAlignmentSpaceInFront);
     static string addSpaces(string source, int desiredLength, ALIGNMENT align);
     static int strDisplayLen(const char *p);

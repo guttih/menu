@@ -26,7 +26,7 @@ void MenuMaker::addItem(string item)
 int MenuMaker::addItems(vector<string> options, ALIGNMENT align)
 {
     int added = 0;
-    this->_align = align;
+    //this->_align = align;
     for (vector<string>::iterator it = options.begin(); it != options.end(); it++)
     {
         this->addItem(*it);
@@ -92,10 +92,21 @@ int MenuMaker::strDisplayLen(const char *s)
     return len;
 }
 
-void MenuMaker::showItem(unsigned int itemIndex)
+void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
 {
-    const char *str = _menuItems.at(itemIndex).c_str();
-    int offset = getAlignIndex(str, _itemDisplayWidth, _align, true);
+    const char *str;
+    int offset;
+    string temp;
+    if (addSpacesAroundItem) {
+        temp=addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth, _align); 
+        str=temp.c_str();
+        offset=0;
+    }
+    else {
+        str=_menuItems.at(itemIndex).c_str();
+        getAlignIndex(str, _itemDisplayWidth, _align, true);
+    }
+
     if (_window)
         mvwprintw(_window, 1 + itemIndex, 2 + offset, "%s", str);
     else
@@ -106,7 +117,36 @@ void MenuMaker::showMenu()
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     for (unsigned int i = 0; i < _menuItems.size(); i++)
     {
-        showItem(i);
+        showItem(i, true);
+    }
+}
+
+/**
+ * @brief Changes the length of a string to disiredLength,
+ *        by adding spaces in front of or/and at end of string.
+ *
+ * @param source The string to be changed
+ * @param desiredLength How long should the string be after conversion
+ * @param align should spaces be added in front of-, at end of- or both.
+ * @return string (the changed string or if desiredLength is not enough the source string)
+ */
+string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align)
+{
+    int len = strDisplayLen(source.c_str());
+    int spaces = desiredLength - len;
+    if (spaces < 0)
+        return source; // no change, not  desired length not enough
+
+    if (align == LEFT)
+        return source + string(spaces, ' ');
+    else if (align == RIGHT)
+        return string(spaces, ' ') + source;
+    else
+    {
+        // CENTER
+        bool isOdd = (spaces % 2 != 0);
+        spaces /= 2;
+        return string(spaces, ' ') + source + string(spaces + isOdd, ' ');
     }
 }
 
@@ -116,7 +156,7 @@ void MenuMaker::surroundItemClear(int itemIndex)
     if (_window)
     {
         wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
-        showItem(itemIndex);
+        showItem(itemIndex, true);
         mvwprintw(_window, 1 + itemIndex, 1, "%c", clear);
         mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", clear);
         
@@ -132,7 +172,7 @@ void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
     if (_window)
     {
         wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
-        showItem(itemIndex);
+        showItem(itemIndex, false);
         wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
         mvwprintw(_window, 1 + itemIndex, 1, "%c", front);
         mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", back);
