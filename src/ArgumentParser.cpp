@@ -70,6 +70,38 @@ bool ArgumentParser::getColorOptionColor(COLOR_OPTIONS cOption, string color)
 
     return true;
 }
+
+/**
+ * @brief Checks if a string is a alignment keyword and returns it's value.
+ *
+ * @param option The keyword to check
+ * @param check Should we check for horizontal keywords or vertical
+ * @return int On success, the enum number of the keyword.  On error -1.
+ */
+int ArgumentParser::getAlignKeywordValue(string option, ALIGNMENT_CHECK check)
+{
+
+    if (check == HORIZONTAL_KEYWORD)
+    {
+        if (option == "left")
+            return HORIZONTAL_ALIGNMENT::LEFT;
+        if (option == "center")
+            return HORIZONTAL_ALIGNMENT::CENTER;
+        if (option == "right")
+            return HORIZONTAL_ALIGNMENT::RIGHT;
+    }
+    if (check == VERTICAL_KEYWORD)
+    {
+        if (option == "top")
+            return VERTICAL_ALIGNMENT::TOP;
+        if (option == "middle")
+            return VERTICAL_ALIGNMENT::MIDDLE;
+        if (option == "bottom")
+            return VERTICAL_ALIGNMENT::BOTTOM;
+    }
+
+    return ERROR_VALUE;
+}
 void ArgumentParser::parseArguments()
 {
     bool foundMenuOption = false;
@@ -95,20 +127,38 @@ void ArgumentParser::parseArguments()
         {
             _optQuiet = true;
         }
-        else if (*it == "--align")
+        else if (*it == "-align")
         {
             it++;
-            if (it == _arguments.end() || (*it != "left" && *it != "center" && *it != "right"))
+            int align;
+            if (it == _arguments.end() || ( align=getAlignKeywordValue(*it, HORIZONTAL_KEYWORD) ) < 0)
             {
                 _optInvalid = true;
-                _errorString = "--align must be followed by one of these keywords left, center or right.";
+                _errorString = "-align must be followed by one of these keywords left, center or right.";
                 return;
             }
-            if (*it == "right")
-                _alignment = RIGHT;
-            else
-                _alignment = *it == "center" ? CENTER : LEFT;
-        } // else if (*it == "--align")
+            _alignment = (HORIZONTAL_ALIGNMENT)align;
+        } // else if (*it == "-align")
+        else if (*it == "-pos")
+        {
+            it++;
+            int align;
+            if (it == _arguments.end() || ( align = getAlignKeywordValue(*it, VERTICAL_KEYWORD) ) < 0)
+            {
+                _optInvalid = true;
+                _errorString = "-pos must be followed by one of these keywords top, middle or bottom.";
+                return;
+            }
+            _optPos.vertical = (VERTICAL_ALIGNMENT)align;
+            it++;
+            if (it == _arguments.end() || ( align = getAlignKeywordValue(*it, HORIZONTAL_KEYWORD) ) < 0)
+            {
+                _optInvalid = true;
+                _errorString = "-pos must be followed by one of these keywords left, center or right.";
+                return;
+            }
+            _optPos.horizontal = (HORIZONTAL_ALIGNMENT)align;
+        } // else if (*it == "-align")
         else if (*it == "-c")
         {
             it++;

@@ -9,6 +9,7 @@
 
 using namespace std;
 
+const int ERROR_VALUE = -1;
 
 enum COLOR_OPTIONS
 {
@@ -18,6 +19,10 @@ enum COLOR_OPTIONS
     BG_SEL
 };
 
+enum ALIGNMENT_CHECK{
+    HORIZONTAL_KEYWORD,
+    VERTICAL_KEYWORD
+};
 
 class ArgumentParser
 {
@@ -29,7 +34,8 @@ private:
     bool _optSelectSymbol = false;
     bool _optQuiet = false;
     bool _optBox=false;
-    ALIGNMENT _alignment = LEFT;
+    HORIZONTAL_ALIGNMENT _alignment = LEFT;
+    SCREEN_ALIGNMENT _optPos={TOP, LEFT };
     string _errorString;
     char _selectSymbolFront = '*';
     char _selectSymbolEnd   = '*';
@@ -37,7 +43,7 @@ private:
     COLORPAIR _colorSelected = { -1, -1 }; 
     bool getColorOptionColor(COLOR_OPTIONS cOption, string color);
     void parseArguments();
-
+    int getAlignKeywordValue(string option, ALIGNMENT_CHECK check);
 public:
     bool isValid() { return !_optInvalid; }
     bool isSelectSymbol() { return _optSelectSymbol; }
@@ -49,7 +55,9 @@ public:
     bool isBox() { return _optBox; }
     const char *errorString();
     ArgumentParser(char const *items[], int itemCount);
-    ALIGNMENT getAlignment(){return _alignment;};
+    HORIZONTAL_ALIGNMENT getAlignment(){return _alignment;};
+    SCREEN_ALIGNMENT getPosition(){return _optPos;};
+    
     vector<string> getMenuOptions();
     ~ArgumentParser();
 };

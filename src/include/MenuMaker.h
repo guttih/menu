@@ -11,11 +11,28 @@
 
 using namespace std;
 
-enum ALIGNMENT
+struct POINT {
+    int x;
+    int y;
+};
+
+enum HORIZONTAL_ALIGNMENT
 {
     LEFT,
     CENTER,
     RIGHT
+};
+enum VERTICAL_ALIGNMENT
+{
+    TOP,
+    MIDDLE,
+    BOTTOM
+};
+
+struct SCREEN_ALIGNMENT
+{
+    VERTICAL_ALIGNMENT vertical;
+    HORIZONTAL_ALIGNMENT horizontal;
 };
 
 struct COLORPAIR
@@ -36,27 +53,30 @@ private:
     WINDOW *_window = NULL;
     COLORPAIR _colorSelected = { -1, -1 }; 
     COLORPAIR _colorMenu     = { -1, -1 }; 
+    HORIZONTAL_ALIGNMENT _align=CENTER;
+    SCREEN_ALIGNMENT _screenPosition={TOP, LEFT };
     void surroundItemClear(int itemIndex);
     void surroundItemWith(int itemIndex, char front, char back);
     void showItem(unsigned int itemIndex, bool addSpaces);
-    int getAlignIndex(string source, int desiredLength, ALIGNMENT align, bool oddAlignmentSpaceInFront);
-    static string addSpaces(string source, int desiredLength, ALIGNMENT align);
+    int getAlignIndex(string source, int desiredLength, HORIZONTAL_ALIGNMENT align, bool oddAlignmentSpaceInFront);
+    static string addSpaces(string source, int desiredLength, HORIZONTAL_ALIGNMENT align);
     static int strDisplayLen(const char *p);
     void showMenu();
     void showSelection(int index);
-    ALIGNMENT _align=CENTER;
+    POINT calculateMenuPosition(POINT maxXY, POINT menuWidthHeight);
 
 public:
-    MenuMaker(vector<string>options, ALIGNMENT align);
+    MenuMaker(vector<string>options, HORIZONTAL_ALIGNMENT align);
     ~MenuMaker();
     int askUser(int startSelection);
     void addItem(string);
-    int addItems(vector<string> options, ALIGNMENT align);
+    int addItems(vector<string> options, HORIZONTAL_ALIGNMENT align);
     void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
     void setShowBox(bool show)                      { _showBox=show; }
     void setMenuColor(COLORPAIR pair);
     void setSelectionColor(COLORPAIR pair);
-    void setAlignment(ALIGNMENT align){ _align=align;}
+    void setAlignment(HORIZONTAL_ALIGNMENT align){ _align=align;}
+    void setPosition(SCREEN_ALIGNMENT screenAlignment){ _screenPosition.horizontal=screenAlignment.horizontal; _screenPosition.vertical = screenAlignment.vertical;}
 };
 
 

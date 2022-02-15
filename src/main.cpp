@@ -29,6 +29,7 @@ int main(int argc, char const *argv[])
     menu.setMenuColor(parser.getMenuColor());
     menu.setSelectionColor(parser.getSelectedColor());
     menu.setAlignment(parser.getAlignment());
+    menu.setPosition(parser.getPosition());
 
     int ret = menu.askUser(1);
     if (!parser.isQuiet())

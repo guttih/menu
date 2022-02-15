@@ -3,7 +3,7 @@
 #define COLOR_PAIR_SEL 1
 #define COLOR_PAIR_MENU 2
 
-MenuMaker::MenuMaker(vector<string> options, ALIGNMENT align)
+MenuMaker::MenuMaker(vector<string> options, HORIZONTAL_ALIGNMENT align)
 {
     addItems(options, align);
 }
@@ -23,10 +23,10 @@ void MenuMaker::addItem(string item)
  * @param options collection of strings to add to the menu
  * @return int The number of items added
  */
-int MenuMaker::addItems(vector<string> options, ALIGNMENT align)
+int MenuMaker::addItems(vector<string> options, HORIZONTAL_ALIGNMENT align)
 {
     int added = 0;
-    //this->_align = align;
+    // this->_align = align;
     for (vector<string>::iterator it = options.begin(); it != options.end(); it++)
     {
         this->addItem(*it);
@@ -61,7 +61,7 @@ MenuMaker::~MenuMaker()
  *                                   space, do you want it in front or back of the text?
  * @return int an integer representing the offset, where this string should be printed with.
  */
-int MenuMaker::getAlignIndex(string source, int desiredLength, ALIGNMENT align, bool oddAlignmentSpaceInFront)
+int MenuMaker::getAlignIndex(string source, int desiredLength, HORIZONTAL_ALIGNMENT align, bool oddAlignmentSpaceInFront)
 {
     int len = strDisplayLen(source.c_str());
     int spaces = desiredLength - len;
@@ -96,13 +96,15 @@ void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
 {
     int offset;
     string temp;
-    if (addSpacesAroundItem) {
-        temp=addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth, _align); 
-        offset=0;
+    if (addSpacesAroundItem)
+    {
+        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth, _align);
+        offset = 0;
     }
-    else {
-        temp=_menuItems.at(itemIndex);
-        offset=getAlignIndex(temp.c_str(), _itemDisplayWidth, _align, true);
+    else
+    {
+        temp = _menuItems.at(itemIndex);
+        offset = getAlignIndex(temp.c_str(), _itemDisplayWidth, _align, false);
     }
 
     if (_window)
@@ -129,7 +131,7 @@ void MenuMaker::showMenu()
  * @param align should spaces be added in front of-, at end of- or both.
  * @return string (the changed string or if desiredLength is not enough the source string)
  */
-string MenuMaker::addSpaces(string source, int desiredLength, ALIGNMENT align)
+string MenuMaker::addSpaces(string source, int desiredLength, HORIZONTAL_ALIGNMENT align)
 {
     int len = strDisplayLen(source.c_str());
     int spaces = desiredLength - len;
@@ -158,7 +160,6 @@ void MenuMaker::surroundItemClear(int itemIndex)
         showItem(itemIndex, true);
         mvwprintw(_window, 1 + itemIndex, 1, "%c", clear);
         mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", clear);
-        
     }
     else
     {
@@ -194,21 +195,56 @@ void MenuMaker::showSelection(int index)
     surroundItemWith(index, _selectionSymbolFront, _selectionSymbolEnd);
 }
 
+POINT MenuMaker::calculateMenuPosition(POINT max, POINT menu)
+{
+    POINT ret;
+    switch (_screenPosition.vertical)
+    {
+    case MIDDLE:
+        ret.y = (max.y - menu.y) / 2;
+        break;
+    case BOTTOM:
+        ret.y = (max.y - menu.y) - 1;
+        break;
+
+    default: //TOP
+        ret.y = 1;
+        break;
+    }
+
+    switch (_screenPosition.horizontal)
+    {
+    case CENTER:
+        ret.x = (max.x - menu.x) / 2;
+        break;
+    case RIGHT:
+        ret.x = (max.x - menu.x) - 1;
+        break;
+
+    default: //LEFT
+        ret.x = 1;
+        break;
+    }
+    return ret;
+}
+
 int MenuMaker::askUser(int startSelection)
 {
-
+    int yMax, xMax;
     bool useStandardScreen = false;
     // https://techlister.com/linux/creating-menu-with-ncurses-in-c/
     int height = _menuItems.size() + 2,
         width = _itemDisplayWidth + 4;
     initscr();
+
+    getmaxyx(stdscr, yMax, xMax);
+    POINT screenPos = calculateMenuPosition({xMax, yMax}, {width, height});
     use_default_colors();
     start_color();
     init_pair(COLOR_PAIR_SEL, _colorSelected.foreground, _colorSelected.background);
-    init_pair(COLOR_PAIR_MENU,_colorMenu.foreground, _colorMenu.background);
+    init_pair(COLOR_PAIR_MENU, _colorMenu.foreground, _colorMenu.background);
 
-    _window = useStandardScreen ? stdscr : newwin(height, width, 1, 1);
-    // clear();
+    _window = useStandardScreen ? stdscr : newwin(height, width, screenPos.y, screenPos.x);
     noecho();
     curs_set(0);
     keypad(_window, true);

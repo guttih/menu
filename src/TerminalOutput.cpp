@@ -48,17 +48,18 @@ void TerminalOutput::printHelp(const char *appName)
     {
         str = str.substr(i + 1);
     }
+    //TODO: Add hMargin and vMargin.
     //info about notation: https://www.youtube.com/watch?v=pXhcPJK5cMc (http://docopt.org/)
     println("Usage: ", str.c_str(), " [OPTIONS]...  -menu <menustring>...");
-    println("Usage: ", str.c_str(), " [--align ( <left> | <center> | <right> )] [OPTIONS]...  -menu <menustring>...");
+    println("Usage: ", str.c_str(), " [-align <hAlign>] [OPTIONS]...  -menu <menustring>...");
     println("Usage: ", str.c_str(), " [-c ( <c1> | <c1> <c2> )]  [OPTIONS]... -menu <menustring>...");
     println("Usage: ", str.c_str(), " [-fg <color> | -bg <color> | -fg_sel <color> | -bg_sel <color>]...  [OPTIONS]... -menu <menustring>...");
+    println("Usage: ", str.c_str(), " [-pos <vAlign> <hAlign> ] [OPTIONS]... -menu <menustring>...");
     println("  Ask the user to select between options");
     println();
     println("OPTIONS       Option description");
     println("  -help       Prints this help page");
-    println(" --align      Alignment of menustrings this option must be followed by one");
-    println("              these words left, center or right.  Default is left.");
+    println(" -align       Alignment of each menustring. This option must be followed hAlign argument");
     println("  -fg         Set forground color of the menu. This option must be follwed by a color argument.");
     println("  -bg         Set background color of the menu. This option must be follwed by a color argument.");
     println("  -fg_sel     Set forground color of the selected item.  This option must be follwed by a color argument.");
@@ -66,6 +67,7 @@ void TerminalOutput::printHelp(const char *appName)
     println("  -c          Must be followed by one or two characters which will be added.");
     println("  -cq         No selection characters will be displayed in front and at end selected text.");
     println("  -q          Do not print selection number");
+    println("  -pos        Menu position on the screen. This option must be followed by a hAlign and vAlign arguments.");
     println("  -box        Surround menu with a box.");
     println
     ();
@@ -75,7 +77,10 @@ void TerminalOutput::printHelp(const char *appName)
     println("ARGUMENTS     Argument description");
     println("  c1          Character in front of or surrounding selected menustring.");
     println("  c2          Character at end of the selected menustring.");
-    println("  color       Must be one of the following keywords: black,red,green,yellow,blue,magenta,cyan,white.");
-    println("  menustring  Must be a double quoted string.");
+    println("  color       Must be one of the following keywords:");
+    println("              black, red, green, yellow, blue, magenta, cyan and white.");
+    println("  hAlign      Horizontal alignment can be one of these keywords left, center or right.");
+    println("  vAlign      Vertical alignment can be one of these keywords top, middle or bottom.");
+    println("  menustring  Text of each item displayed in the menu.  Best to have this a double quoted string.");
     println();
 }
