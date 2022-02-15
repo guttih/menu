@@ -18,6 +18,12 @@ enum ALIGNMENT
     RIGHT
 };
 
+struct COLORPAIR
+{
+    short foreground;
+    short background;
+};
+
 class MenuMaker
 {
 private:
@@ -26,9 +32,10 @@ private:
     int _itemDisplayWidth = 0;
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
-    bool _highLightSelection=true;
     bool _showBox=false;
     WINDOW *_window = NULL;
+    COLORPAIR _colorSelected = { -1, -1 }; 
+    COLORPAIR _colorMenu     = { -1, -1 }; 
     void surroundItemClear(int itemIndex);
     void surroundItemWith(int itemIndex, char front, char back);
     void showItem(unsigned int itemIndex);
@@ -46,8 +53,9 @@ public:
     void addItem(string);
     int addItems(vector<string> options, ALIGNMENT align);
     void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
-    void setHighlightSelection(bool highlight)      { _highLightSelection=highlight; }
     void setShowBox(bool show)                      { _showBox=show; }
+    void setMenuColor(COLORPAIR pair);
+    void setSelectionColor(COLORPAIR pair);
 };
 
 

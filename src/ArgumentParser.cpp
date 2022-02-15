@@ -9,7 +9,67 @@ ArgumentParser::ArgumentParser(char const *items[], int itemCount)
     }
     parseArguments();
 }
+bool ArgumentParser::getColorOptionColor(COLOR_OPTIONS cOption, string color)
+{
+    short colorNum;
+    if (color == "black")
+    {
+        colorNum = COLOR_BLACK;
+    }
+    else if (color == "red")
+    {
+        colorNum = COLOR_RED;
+    }
+    else if (color == "green")
+    {
+        colorNum = COLOR_GREEN;
+    }
+    else if (color == "yellow")
+    {
+        colorNum = COLOR_YELLOW;
+    }
+    else if (color == "blue")
+    {
+        colorNum = COLOR_BLUE;
+    }
+    else if (color == "magenta")
+    {
+        colorNum = COLOR_MAGENTA;
+    }
+    else if (color == "cyan")
+    {
+        colorNum = COLOR_CYAN;
+    }
+    else if (color == "white")
+    {
+        colorNum = COLOR_WHITE;
+    }
+    else
+    {
+        return false;
+    }
 
+    switch (cOption)
+    {
+    case COLOR_OPTIONS::FG:
+        _colorMenu.foreground = colorNum;
+        break;
+    case COLOR_OPTIONS::BG:
+        _colorMenu.background = colorNum;
+        break;
+    case COLOR_OPTIONS::FG_SEL:
+        _colorSelected.foreground = colorNum;
+        break;
+    case COLOR_OPTIONS::BG_SEL:
+        _colorSelected.background = colorNum;
+        break;
+
+    default:
+        return false;
+    }
+
+    return true;
+}
 void ArgumentParser::parseArguments()
 {
     bool foundMenuOption = false;
@@ -31,9 +91,9 @@ void ArgumentParser::parseArguments()
             _optHelp = true;
             return;
         }
-         else if (*it == "-q" || *it == "-quiet")
+        else if (*it == "-q" || *it == "-quiet")
         {
-            _optQuiet=true;
+            _optQuiet = true;
         }
         else if (*it == "--align")
         {
@@ -52,7 +112,7 @@ void ArgumentParser::parseArguments()
         else if (*it == "-c")
         {
             it++;
-            _optSelectSymbol=true;
+            _optSelectSymbol = true;
             if (it->length() != 1)
             {
                 _optInvalid = true;
@@ -61,25 +121,64 @@ void ArgumentParser::parseArguments()
             }
             _selectSymbolEnd = _selectSymbolFront = it->at(0);
             it++;
-            if (it->length() == 1){
-                _selectSymbolEnd=it->at(0);
-            } else {
-                //No end symbol, will be using same in front and back
+            if (it->length() == 1)
+            {
+                _selectSymbolEnd = it->at(0);
+            }
+            else
+            {
+                // No end symbol, will be using same in front and back
                 it--;
+            }
+        }
+        else if (*it == "-fg")
+        {
+            it++;
+            if (!getColorOptionColor(COLOR_OPTIONS::FG, *it))
+            {
+                _optInvalid = true;
+                _errorString = "fg must be followed by a color";
+                return;
+            }
+        }
+        else if (*it == "-bg")
+        {
+            it++;
+            if (!getColorOptionColor(COLOR_OPTIONS::BG, *it))
+            {
+                _optInvalid = true;
+                _errorString = "bg must be followed by a color";
+                return;
+            }
+        }
+        else if (*it == "-fg_sel")
+        {
+            it++;
+            if (!getColorOptionColor(COLOR_OPTIONS::FG_SEL, *it))
+            {
+                _optInvalid = true;
+                _errorString = "fg_sel must be followed by a color";
+                return;
+            }
+        }
+        else if (*it == "-bg_sel")
+        {
+            it++;
+            if (!getColorOptionColor(COLOR_OPTIONS::BG_SEL, *it))
+            {
+                _optInvalid = true;
+                _errorString = "bg_sel must be followed by a color";
+                return;
             }
         }
         else if (*it == "-cq")
         {
-            _optSelectSymbol=true;
-            _selectSymbolEnd = _selectSymbolFront=' ';
-        }
-        else if (*it == "-highlight")
-        {
-            _optSelectHighlight=true;
+            _optSelectSymbol = true;
+            _selectSymbolEnd = _selectSymbolFront = ' ';
         }
         else if (*it == "-box")
         {
-            _optBox=true;
+            _optBox = true;
         }
         else
         {
@@ -120,9 +219,9 @@ const char *ArgumentParser::errorString()
 
 /**
  * @brief Get the symbol that represents selected menu string.
- * 
+ *
  * @param frontSymbol - true if front symbol, false if end symbol
- * @return char 
+ * @return char
  */
 char ArgumentParser::getSelectSymbol(bool frontSymbol)
 {

@@ -1,5 +1,8 @@
 #include "include/MenuMaker.h"
 
+#define COLOR_PAIR_SEL 1
+#define COLOR_PAIR_MENU 2
+
 MenuMaker::MenuMaker(vector<string> options, ALIGNMENT align)
 {
     addItems(options, align);
@@ -32,6 +35,17 @@ int MenuMaker::addItems(vector<string> options, ALIGNMENT align)
 
     return added;
 }
+
+void MenuMaker::setMenuColor(COLORPAIR pair)
+{
+    _colorMenu.foreground = pair.foreground;
+    _colorMenu.background = pair.background;
+};
+void MenuMaker::setSelectionColor(COLORPAIR pair)
+{
+    _colorSelected.foreground = pair.foreground;
+    _colorSelected.background = pair.background;
+};
 
 MenuMaker::~MenuMaker()
 {
@@ -89,6 +103,7 @@ void MenuMaker::showItem(unsigned int itemIndex)
 }
 void MenuMaker::showMenu()
 {
+    wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     for (unsigned int i = 0; i < _menuItems.size(); i++)
     {
         showItem(i);
@@ -100,10 +115,6 @@ void MenuMaker::surroundItemClear(int itemIndex)
     char clear = ' ';
     if (_window)
     {
-        if (_highLightSelection)
-        {
-            showItem(itemIndex);
-        }
         mvwprintw(_window, 1 + itemIndex, 1, "%c", clear);
         mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", clear);
     }
@@ -117,13 +128,9 @@ void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
     if (_window)
     {
-        if (_highLightSelection)
-        {
-
-            wattron(_window, A_STANDOUT);
-            showItem(itemIndex);
-            wattroff(_window, A_STANDOUT);
-        }
+        wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
+        showItem(itemIndex);
+        wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
         mvwprintw(_window, 1 + itemIndex, 1, "%c", front);
         mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", back);
     }
@@ -144,20 +151,28 @@ void MenuMaker::showSelection(int index)
     lastIndex = index;
     surroundItemWith(index, _selectionSymbolFront, _selectionSymbolEnd);
 }
+
 int MenuMaker::askUser(int startSelection)
 {
+
     bool useStandardScreen = false;
     // https://techlister.com/linux/creating-menu-with-ncurses-in-c/
     int height = _menuItems.size() + 2,
         width = _itemDisplayWidth + 4;
     initscr();
+    use_default_colors();
+    start_color();
+    init_pair(COLOR_PAIR_SEL, _colorSelected.foreground, _colorSelected.background);
+    init_pair(COLOR_PAIR_MENU,_colorMenu.foreground, _colorMenu.background);
+
     _window = useStandardScreen ? stdscr : newwin(height, width, 1, 1);
-    if (_showBox)
-        box(_window, 0, 0);
     // clear();
     noecho();
     curs_set(0);
     keypad(_window, true);
+    wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
+    if (_showBox)
+        box(_window, 0, 0);
     wrefresh(_window);
     showMenu();
     showSelection(0);
@@ -168,7 +183,7 @@ int MenuMaker::askUser(int startSelection)
 
     int selected = -1;
     int ch = ' ';
-    while (ch != 'q' && ch != 27 && selected == -1)
+    while (ch != 'q' && ch != 'Q' && ch != 27 && selected == -1)
     {
         ch = wgetch(_window);
         switch (ch)

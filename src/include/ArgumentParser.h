@@ -9,6 +9,16 @@
 
 using namespace std;
 
+
+enum COLOR_OPTIONS
+{
+    FG,
+    BG,
+    FG_SEL,
+    BG_SEL
+};
+
+
 class ArgumentParser
 {
 private:
@@ -18,22 +28,24 @@ private:
     bool _optInvalid = false;
     bool _optSelectSymbol = false;
     bool _optQuiet = false;
-    bool _optSelectHighlight=false;
     bool _optBox=false;
     ALIGNMENT _alignment = LEFT;
     string _errorString;
     char _selectSymbolFront = '*';
     char _selectSymbolEnd   = '*';
-
+    COLORPAIR _colorMenu     = { -1, -1 }; 
+    COLORPAIR _colorSelected = { -1, -1 }; 
+    bool getColorOptionColor(COLOR_OPTIONS cOption, string color);
     void parseArguments();
 
 public:
     bool isValid() { return !_optInvalid; }
     bool isSelectSymbol() { return _optSelectSymbol; }
     char getSelectSymbol(bool frontSymbol);
+    COLORPAIR getMenuColor()    { return _colorMenu;     }
+    COLORPAIR getSelectedColor(){ return _colorSelected;}
     bool isPrintHelp() { return _optHelp; }
     bool isQuiet() { return _optQuiet; }
-    bool isHighlight() { return _optSelectHighlight; }
     bool isBox() { return _optBox; }
     const char *errorString();
     ArgumentParser(char const *items[], int itemCount);
