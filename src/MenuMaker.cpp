@@ -98,19 +98,19 @@ void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
     string temp;
     if (addSpacesAroundItem)
     {
-        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth, _align);
+        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth+(_margin.x*2), _align);
         offset = 0;
     }
     else
     {
         temp = _menuItems.at(itemIndex);
-        offset = getAlignIndex(temp.c_str(), _itemDisplayWidth, _align, false);
+        offset = getAlignIndex(temp.c_str(), _itemDisplayWidth+(_margin.x*2), _align, false);
     }
 
     if (_window)
-        mvwprintw(_window, 1 + itemIndex, 2 + offset, "%s", temp.c_str());
+        mvwprintw(_window, 1 + itemIndex + _margin.y, 2 + offset, "%s", temp.c_str());
     else
-        mvprintw(itemIndex, 1 + offset, "%s", temp.c_str());
+        mvprintw(itemIndex, 1 + offset + _margin.y, "%s", temp.c_str());
 }
 void MenuMaker::showMenu()
 {
@@ -158,13 +158,13 @@ void MenuMaker::surroundItemClear(int itemIndex)
     {
         wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
         showItem(itemIndex, true);
-        mvwprintw(_window, 1 + itemIndex, 1, "%c", clear);
-        mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", clear);
+        mvwprintw(_window, 1 + itemIndex+_margin.y, 1+_margin.x, "%c", clear);
+        mvwprintw(_window, 1 + itemIndex+_margin.y, _itemDisplayWidth + 2+_margin.x, "%c", clear);
     }
     else
     {
-        mvprintw(itemIndex, 0, "%c", clear);
-        mvprintw(itemIndex, _itemDisplayWidth + 1, "%c", clear);
+        mvprintw(itemIndex+_margin.y, 0+_margin.x, "%c", clear);
+        mvprintw(itemIndex+_margin.y, _itemDisplayWidth + 1+_margin.x, "%c", clear);
     }
 }
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
@@ -174,13 +174,13 @@ void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
         wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
         showItem(itemIndex, false);
         wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
-        mvwprintw(_window, 1 + itemIndex, 1, "%c", front);
-        mvwprintw(_window, 1 + itemIndex, _itemDisplayWidth + 2, "%c", back);
+        mvwprintw(_window, 1 + itemIndex+_margin.y, 1+_margin.x, "%c", front);
+        mvwprintw(_window, 1 + itemIndex+_margin.y, _itemDisplayWidth + 2+_margin.x, "%c", back);
     }
     else
     {
-        mvprintw(itemIndex, 0, "%c", front);
-        mvprintw(itemIndex, _itemDisplayWidth + 1, "%c", back);
+        mvprintw(itemIndex+_margin.y, 0+_margin.x, "%c", front);
+        mvprintw(itemIndex+_margin.y, _itemDisplayWidth + 1+_margin.x, "%c", back);
     }
 }
 void MenuMaker::showSelection(int index)
@@ -233,8 +233,8 @@ int MenuMaker::askUser(int startSelection)
     int yMax, xMax;
     bool useStandardScreen = false;
     // https://techlister.com/linux/creating-menu-with-ncurses-in-c/
-    int height = _menuItems.size() + 2,
-        width = _itemDisplayWidth + 4;
+    int height = (_menuItems.size() + 2)+(_margin.y*2),
+        width = (_itemDisplayWidth + 4)+(_margin.x*2);
     initscr();
 
     getmaxyx(stdscr, yMax, xMax);

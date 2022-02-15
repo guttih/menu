@@ -36,6 +36,7 @@ private:
     bool _optBox=false;
     HORIZONTAL_ALIGNMENT _alignment = LEFT;
     SCREEN_ALIGNMENT _optPos={TOP, LEFT };
+    POINT _optMargin={0,0};
     string _errorString;
     char _selectSymbolFront = '*';
     char _selectSymbolEnd   = '*';
@@ -44,12 +45,14 @@ private:
     bool getColorOptionColor(COLOR_OPTIONS cOption, string color);
     void parseArguments();
     int getAlignKeywordValue(string option, ALIGNMENT_CHECK check);
+    int getNumberValue(string option);
 public:
     bool isValid() { return !_optInvalid; }
     bool isSelectSymbol() { return _optSelectSymbol; }
     char getSelectSymbol(bool frontSymbol);
     COLORPAIR getMenuColor()    { return _colorMenu;     }
     COLORPAIR getSelectedColor(){ return _colorSelected;}
+    POINT getMargin(){return _optMargin;}
     bool isPrintHelp() { return _optHelp; }
     bool isQuiet() { return _optQuiet; }
     bool isBox() { return _optBox; }

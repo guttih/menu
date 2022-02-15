@@ -50,6 +50,7 @@ private:
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
     bool _showBox=false;
+    POINT _margin={0,0};
     WINDOW *_window = NULL;
     COLORPAIR _colorSelected = { -1, -1 }; 
     COLORPAIR _colorMenu     = { -1, -1 }; 
@@ -64,7 +65,7 @@ private:
     void showMenu();
     void showSelection(int index);
     POINT calculateMenuPosition(POINT maxXY, POINT menuWidthHeight);
-
+    
 public:
     MenuMaker(vector<string>options, HORIZONTAL_ALIGNMENT align);
     ~MenuMaker();
@@ -77,6 +78,7 @@ public:
     void setSelectionColor(COLORPAIR pair);
     void setAlignment(HORIZONTAL_ALIGNMENT align){ _align=align;}
     void setPosition(SCREEN_ALIGNMENT screenAlignment){ _screenPosition.horizontal=screenAlignment.horizontal; _screenPosition.vertical = screenAlignment.vertical;}
+    void setMargin(POINT margin){_margin.x=margin.x; _margin.y=margin.y;};
 };
 
 

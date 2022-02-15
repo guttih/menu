@@ -55,6 +55,7 @@ void TerminalOutput::printHelp(const char *appName)
     println("Usage: ", str.c_str(), " [-c ( <c1> | <c1> <c2> )]  [OPTIONS]... -menu <menustring>...");
     println("Usage: ", str.c_str(), " [-fg <color> | -bg <color> | -fg_sel <color> | -bg_sel <color>]...  [OPTIONS]... -menu <menustring>...");
     println("Usage: ", str.c_str(), " [-pos <vAlign> <hAlign> ] [OPTIONS]... -menu <menustring>...");
+    println("Usage: ", str.c_str(), " [-margin <vMargin> <hMargin> ] [OPTIONS]... -menu <menustring>...");
     println("  Ask the user to select between options");
     println();
     println("OPTIONS       Option description");
@@ -64,10 +65,12 @@ void TerminalOutput::printHelp(const char *appName)
     println("  -bg         Set background color of the menu. This option must be follwed by a color argument.");
     println("  -fg_sel     Set forground color of the selected item.  This option must be follwed by a color argument.");
     println("  -bg_sel     Set background color of the selected item.  This option must be follwed by a color argument.");
-    println("  -c          Must be followed by one or two characters which will be added.");
+    println("  -c          Select the character(s) surrounding the selected string");
+    println("              This option must be followed by argument c1 or arguments c1 and c2.");
     println("  -cq         No selection characters will be displayed in front and at end selected text.");
     println("  -q          Do not print selection number");
-    println("  -pos        Menu position on the screen. This option must be followed by a hAlign and vAlign arguments.");
+    println("  -margin     Outer margin.  This option must be followed by a vMargin and hMargin arguments.");
+    println("  -pos        Menu position on the screen. This option must be followed by a vAlign and hAlign arguments.");
     println("  -box        Surround menu with a box.");
     println
     ();
@@ -79,8 +82,10 @@ void TerminalOutput::printHelp(const char *appName)
     println("  c2          Character at end of the selected menustring.");
     println("  color       Must be one of the following keywords:");
     println("              black, red, green, yellow, blue, magenta, cyan and white.");
-    println("  hAlign      Horizontal alignment can be one of these keywords left, center or right.");
     println("  vAlign      Vertical alignment can be one of these keywords top, middle or bottom.");
+    println("  hAlign      Horizontal alignment can be one of these keywords left, center or right.");
+    println("  vMargin     A number representing the vertical margin of the menu.");
+    println("  hMargin     A number representing the horizontal margin of the menu.");
     println("  menustring  Text of each item displayed in the menu.  Best to have this a double quoted string.");
     println();
 }

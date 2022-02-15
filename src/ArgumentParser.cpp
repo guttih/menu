@@ -102,6 +102,23 @@ int ArgumentParser::getAlignKeywordValue(string option, ALIGNMENT_CHECK check)
 
     return ERROR_VALUE;
 }
+
+/**
+ * @brief Converts a string to a number
+ * 
+ * @param option - the string to be converted to a number.
+ * @return int On success a non negative number is returned.  On fail, -1 is returned.
+ */
+int ArgumentParser::getNumberValue(string option)
+{
+    if (option.length() < 1 || option.length() > 5)
+        return ERROR_VALUE;
+    else if (option == "0")
+        return 0;
+    int i = std::atoi(option.c_str());
+    if (i < 0) return -1;
+    return i;
+}
 void ArgumentParser::parseArguments()
 {
     bool foundMenuOption = false;
@@ -158,7 +175,27 @@ void ArgumentParser::parseArguments()
                 return;
             }
             _optPos.horizontal = (HORIZONTAL_ALIGNMENT)align;
-        } // else if (*it == "-align")
+        } // else if (*it == "-pos")
+        else if (*it == "-margin")
+        {
+            it++;
+            int margin;
+            if (it == _arguments.end() || ( margin = getNumberValue(*it) ) < 0)
+            {
+                _optInvalid = true;
+                _errorString = "-margin must be followed by a number.";
+                return;
+            }
+            _optMargin.y = margin;
+            it++;
+            if (it == _arguments.end() || ( margin = getNumberValue(*it) ) < 0)
+            {
+                _optInvalid = true;
+                _errorString = "-margin must be followed by two numbers.";
+                return;
+            }
+            _optMargin.x = margin;
+        } // else if (*it == "-margin")
         else if (*it == "-c")
         {
             it++;
