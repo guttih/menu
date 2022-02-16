@@ -38,18 +38,20 @@ private:
     SCREEN_ALIGNMENT _optPos={TOP, LEFT };
     POINT _optMargin={0,0};
     string _errorString;
+    vector<string> _titles;
     char _selectSymbolFront = '*';
     char _selectSymbolEnd   = '*';
     COLORPAIR _colorMenu     = { -1, -1 }; 
     COLORPAIR _colorSelected = { -1, -1 }; 
-    bool getColorOptionColor(COLOR_OPTIONS cOption, string color);
     void parseArguments();
+    bool getColorOptionColor(COLOR_OPTIONS cOption, string color);
     int getAlignKeywordValue(string option, ALIGNMENT_CHECK check);
     int getNumberValue(string option);
 public:
     bool isValid() { return !_optInvalid; }
     bool isSelectSymbol() { return _optSelectSymbol; }
     char getSelectSymbol(bool frontSymbol);
+    vector<string> getTitle(){return _titles; }
     COLORPAIR getMenuColor()    { return _colorMenu;     }
     COLORPAIR getSelectedColor(){ return _colorSelected;}
     POINT getMargin(){return _optMargin;}

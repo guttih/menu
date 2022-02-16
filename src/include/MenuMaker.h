@@ -49,8 +49,10 @@ private:
     int _itemDisplayWidth = 0;
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
+    vector<string> _titles;
     bool _showBox=false;
     POINT _margin={0,0};
+    POINT _menuMargin={0,0};
     WINDOW *_window = NULL;
     COLORPAIR _colorSelected = { -1, -1 }; 
     COLORPAIR _colorMenu     = { -1, -1 }; 
@@ -62,6 +64,8 @@ private:
     int getAlignIndex(string source, int desiredLength, HORIZONTAL_ALIGNMENT align, bool oddAlignmentSpaceInFront);
     static string addSpaces(string source, int desiredLength, HORIZONTAL_ALIGNMENT align);
     static int strDisplayLen(const char *p);
+    void rectangle(int y1, int x1, int y2, int x2);
+    void showTitle();
     void showMenu();
     void showSelection(int index);
     POINT calculateMenuPosition(POINT maxXY, POINT menuWidthHeight);
@@ -72,6 +76,7 @@ public:
     int askUser(int startSelection);
     void addItem(string);
     int addItems(vector<string> options, HORIZONTAL_ALIGNMENT align);
+    void setTitle(vector<string>  titleStrings){_titles = titleStrings;}
     void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
     void setShowBox(bool show)                      { _showBox=show; }
     void setMenuColor(COLORPAIR pair);

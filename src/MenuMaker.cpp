@@ -51,6 +51,18 @@ MenuMaker::~MenuMaker()
 {
 }
 
+void MenuMaker::rectangle(int y1, int x1, int y2, int x2)
+{
+    mvwhline(_window, y1, x1, 0, x2 - x1);
+    mvwhline(_window, y2, x1, 0, x2 - x1);
+    mvwvline(_window, y1, x1, 0, y2 - y1);
+    mvwvline(_window, y1, x2, 0, y2 - y1);
+    mvwaddch(_window, y1, x1, ACS_ULCORNER);
+    mvwaddch(_window, y2, x1, ACS_LLCORNER);
+    mvwaddch(_window, y1, x2, ACS_URCORNER);
+    mvwaddch(_window, y2, x2, ACS_LRCORNER);
+}
+
 /**
  * @brief Calculates the offset of a text to be aligned.
  *
@@ -98,19 +110,16 @@ void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
     string temp;
     if (addSpacesAroundItem)
     {
-        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth+(_margin.x*2), _align);
+        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth + (_margin.x * 2), _align);
         offset = 0;
     }
     else
     {
         temp = _menuItems.at(itemIndex);
-        offset = getAlignIndex(temp.c_str(), _itemDisplayWidth+(_margin.x*2), _align, false);
+        offset = getAlignIndex(temp.c_str(), _itemDisplayWidth + (_margin.x * 2), _align, false);
     }
 
-    if (_window)
-        mvwprintw(_window, 1 + itemIndex + _margin.y, 2 + offset, "%s", temp.c_str());
-    else
-        mvprintw(itemIndex, 1 + offset + _margin.y, "%s", temp.c_str());
+    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 2 + offset, "%s", temp.c_str());
 }
 void MenuMaker::showMenu()
 {
@@ -119,6 +128,14 @@ void MenuMaker::showMenu()
     {
         surroundItemClear(i);
         showItem(i, true);
+    }
+}
+
+void MenuMaker::showTitle()
+{
+    for ( size_t i = 0; i < _titles.size(); i++)
+    {
+        mvwprintw(_window, 1 +i+ _margin.y, 1+_margin.x, "%s", _titles.at(i).c_str());
     }
 }
 
@@ -154,34 +171,18 @@ string MenuMaker::addSpaces(string source, int desiredLength, HORIZONTAL_ALIGNME
 void MenuMaker::surroundItemClear(int itemIndex)
 {
     char clear = ' ';
-    if (_window)
-    {
-        wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
-        showItem(itemIndex, true);
-        mvwprintw(_window, 1 + itemIndex+_margin.y, 1+_margin.x, "%c", clear);
-        mvwprintw(_window, 1 + itemIndex+_margin.y, _itemDisplayWidth + 2+_margin.x, "%c", clear);
-    }
-    else
-    {
-        mvprintw(itemIndex+_margin.y, 0+_margin.x, "%c", clear);
-        mvprintw(itemIndex+_margin.y, _itemDisplayWidth + 1+_margin.x, "%c", clear);
-    }
+    wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
+    showItem(itemIndex, true);
+    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 1 + _margin.x, "%c", clear);
+    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, _itemDisplayWidth + 2 + _margin.x, "%c", clear);
 }
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
-    if (_window)
-    {
-        wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
-        showItem(itemIndex, false);
-        wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
-        mvwprintw(_window, 1 + itemIndex+_margin.y, 1+_margin.x, "%c", front);
-        mvwprintw(_window, 1 + itemIndex+_margin.y, _itemDisplayWidth + 2+_margin.x, "%c", back);
-    }
-    else
-    {
-        mvprintw(itemIndex+_margin.y, 0+_margin.x, "%c", front);
-        mvprintw(itemIndex+_margin.y, _itemDisplayWidth + 1+_margin.x, "%c", back);
-    }
+    wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
+    showItem(itemIndex, false);
+    wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
+    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 1 + _margin.x, "%c", front);
+    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, _itemDisplayWidth + 2 + _margin.x, "%c", back);
 }
 void MenuMaker::showSelection(int index)
 {
@@ -207,7 +208,7 @@ POINT MenuMaker::calculateMenuPosition(POINT max, POINT menu)
         ret.y = (max.y - menu.y) - 1;
         break;
 
-    default: //TOP
+    default: // TOP
         ret.y = 1;
         break;
     }
@@ -221,7 +222,7 @@ POINT MenuMaker::calculateMenuPosition(POINT max, POINT menu)
         ret.x = (max.x - menu.x) - 1;
         break;
 
-    default: //LEFT
+    default: // LEFT
         ret.x = 1;
         break;
     }
@@ -230,11 +231,25 @@ POINT MenuMaker::calculateMenuPosition(POINT max, POINT menu)
 
 int MenuMaker::askUser(int startSelection)
 {
-    int yMax, xMax;
-    bool useStandardScreen = false;
+    int yMax, xMax, menuWidth;
     // https://techlister.com/linux/creating-menu-with-ncurses-in-c/
-    int height = (_menuItems.size() + 2)+(_margin.y*2),
-        width = (_itemDisplayWidth + 4)+(_margin.x*2);
+    menuWidth = _itemDisplayWidth + 4;
+    int height = (_menuItems.size() + 2) + (_margin.y * 2),
+        width = (menuWidth) + (_margin.x * 2);
+
+    if (_titles.size() > 0)
+    {
+        _menuMargin.y += _titles.size();
+        height+=_titles.size();
+        size_t longest = 0;
+        for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
+        {
+            if ((*it).length() > longest)
+                longest = (*it).length();
+        }
+            if (menuWidth < (int)longest)
+                width += longest - menuWidth;
+    }
     initscr();
 
     getmaxyx(stdscr, yMax, xMax);
@@ -244,14 +259,16 @@ int MenuMaker::askUser(int startSelection)
     init_pair(COLOR_PAIR_SEL, _colorSelected.foreground, _colorSelected.background);
     init_pair(COLOR_PAIR_MENU, _colorMenu.foreground, _colorMenu.background);
 
-    _window = useStandardScreen ? stdscr : newwin(height, width, screenPos.y, screenPos.x);
+    _window = newwin(height, width, screenPos.y, screenPos.x);
     noecho();
     curs_set(0);
     keypad(_window, true);
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     if (_showBox)
-        box(_window, 0, 0);
+        rectangle(0, 0, height-1, width - 1);
+    // box(_window, 0, 0);
     wrefresh(_window);
+    showTitle();
     showMenu();
     showSelection(0);
     // wattron( _window, A_STANDOUT ); /*highlights the first item.*/ wattroff( _window, A_STANDOUT );

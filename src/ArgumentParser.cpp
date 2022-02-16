@@ -105,7 +105,7 @@ int ArgumentParser::getAlignKeywordValue(string option, ALIGNMENT_CHECK check)
 
 /**
  * @brief Converts a string to a number
- * 
+ *
  * @param option - the string to be converted to a number.
  * @return int On success a non negative number is returned.  On fail, -1 is returned.
  */
@@ -116,7 +116,8 @@ int ArgumentParser::getNumberValue(string option)
     else if (option == "0")
         return 0;
     int i = std::atoi(option.c_str());
-    if (i < 0) return -1;
+    if (i < 0)
+        return -1;
     return i;
 }
 void ArgumentParser::parseArguments()
@@ -127,7 +128,7 @@ void ArgumentParser::parseArguments()
         if (foundMenuOption)
         {
 
-            _menuItems.push_back(it->c_str());
+            _menuItems.push_back(*it);
             _arguments.erase(it--);
         }
         else if (*it == "-menu")
@@ -140,6 +141,24 @@ void ArgumentParser::parseArguments()
             _optHelp = true;
             return;
         }
+        else if (*it == "-title")
+        {   _titles.clear();
+            it++;
+            if (it == _arguments.end() )
+            {
+                _optInvalid = true;
+                _errorString = "title must be followed by a string";
+                return;
+            }
+            _titles.push_back(*it);
+            while ( (*(++it)).rfind("-") != 0 && it != _arguments.end() )
+            {
+                _titles.push_back(*it);
+            }
+            if (it != _arguments.end())
+                it--; //We have an option we need to process.
+
+        }
         else if (*it == "-q" || *it == "-quiet")
         {
             _optQuiet = true;
@@ -148,7 +167,7 @@ void ArgumentParser::parseArguments()
         {
             it++;
             int align;
-            if (it == _arguments.end() || ( align=getAlignKeywordValue(*it, HORIZONTAL_KEYWORD) ) < 0)
+            if (it == _arguments.end() || (align = getAlignKeywordValue(*it, HORIZONTAL_KEYWORD)) < 0)
             {
                 _optInvalid = true;
                 _errorString = "-align must be followed by one of these keywords left, center or right.";
@@ -160,7 +179,7 @@ void ArgumentParser::parseArguments()
         {
             it++;
             int align;
-            if (it == _arguments.end() || ( align = getAlignKeywordValue(*it, VERTICAL_KEYWORD) ) < 0)
+            if (it == _arguments.end() || (align = getAlignKeywordValue(*it, VERTICAL_KEYWORD)) < 0)
             {
                 _optInvalid = true;
                 _errorString = "-pos must be followed by one of these keywords top, middle or bottom.";
@@ -168,7 +187,7 @@ void ArgumentParser::parseArguments()
             }
             _optPos.vertical = (VERTICAL_ALIGNMENT)align;
             it++;
-            if (it == _arguments.end() || ( align = getAlignKeywordValue(*it, HORIZONTAL_KEYWORD) ) < 0)
+            if (it == _arguments.end() || (align = getAlignKeywordValue(*it, HORIZONTAL_KEYWORD)) < 0)
             {
                 _optInvalid = true;
                 _errorString = "-pos must be followed by one of these keywords left, center or right.";
@@ -180,7 +199,7 @@ void ArgumentParser::parseArguments()
         {
             it++;
             int margin;
-            if (it == _arguments.end() || ( margin = getNumberValue(*it) ) < 0)
+            if (it == _arguments.end() || (margin = getNumberValue(*it)) < 0)
             {
                 _optInvalid = true;
                 _errorString = "-margin must be followed by a number.";
@@ -188,7 +207,7 @@ void ArgumentParser::parseArguments()
             }
             _optMargin.y = margin;
             it++;
-            if (it == _arguments.end() || ( margin = getNumberValue(*it) ) < 0)
+            if (it == _arguments.end() || (margin = getNumberValue(*it)) < 0)
             {
                 _optInvalid = true;
                 _errorString = "-margin must be followed by two numbers.";
