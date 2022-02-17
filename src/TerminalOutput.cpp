@@ -60,13 +60,13 @@ void TerminalOutput::printHelp(const char *appName)
     println();
     println("OPTIONS     Option description");
     println("  -help     Prints this help page");
-    println("  -title    A title displayed above them menu.  This option must be followed by a string argument.");
+    println("  -title    A title displayed above them menu.  This option must be followed by a titleLine(s).");
     println(" -align     Alignment of each menuLine. This option must be followed hAlign argument");
     println("  -fg       Set forground color of the menu. This option must be follwed by a color argument.");
     println("  -bg       Set background color of the menu. This option must be follwed by a color argument.");
     println("  -fg_sel   Set forground color of the selected item.  This option must be follwed by a color argument.");
     println("  -bg_sel   Set background color of the selected item.  This option must be follwed by a color argument.");
-    println("  -c        Select the character(s) surrounding the selected string");
+    println("  -c        Select the character(s) surrounding the selected text.");
     println("            This option must be followed by argument c1 or arguments c1 and c2.");
     println("  -cq       No selection characters will be displayed in front and at end selected text.");
     println("  -q        Do not print selection number");
@@ -79,7 +79,7 @@ void TerminalOutput::printHelp(const char *appName)
     println("  -menu     This command must be followed by one or more menuLine");
     println();
     println("ARGUMENTS    Argument description");
-    println("  menuLine   Text of each selectable item displayed in the menu.  Best to have this a double quoted string.");
+    println("  menuLine   Text of each selectable item displayed in the menu.  Best to have this a double quoted text.");
     println("  titleLine  Text displayed above the menu.  Best to double quote and align by using spaces within quotes.");
     println("             No line is allowed to start with the character '-' because it will be considered a option.");
     println("  c1         Character in front of or surrounding selected menuLine.");

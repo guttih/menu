@@ -76,7 +76,7 @@ public:
     int askUser(int startSelection);
     void addItem(string);
     int addItems(vector<string> options, HORIZONTAL_ALIGNMENT align);
-    void setTitle(vector<string>  titleStrings){_titles = titleStrings;}
+    void setTitle(vector<string>  titleStrings);
     void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
     void setShowBox(bool show)                      { _showBox=show; }
     void setMenuColor(COLORPAIR pair);

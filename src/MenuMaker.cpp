@@ -7,6 +7,17 @@ MenuMaker::MenuMaker(vector<string> options, HORIZONTAL_ALIGNMENT align)
 {
     addItems(options, align);
 }
+void MenuMaker::setTitle(vector<string> titleStrings)
+{
+    _titles = titleStrings;
+    int displayLen;
+    for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
+    {
+        displayLen = strDisplayLen((*it).c_str());
+        if (displayLen > _itemDisplayWidth)
+            _itemDisplayWidth = displayLen;
+    }
+}
 
 void MenuMaker::addItem(string item)
 {
@@ -26,7 +37,6 @@ void MenuMaker::addItem(string item)
 int MenuMaker::addItems(vector<string> options, HORIZONTAL_ALIGNMENT align)
 {
     int added = 0;
-    // this->_align = align;
     for (vector<string>::iterator it = options.begin(); it != options.end(); it++)
     {
         this->addItem(*it);
@@ -137,23 +147,23 @@ void MenuMaker::showTitle()
     {
         for (size_t i = 0; i < _titles.size(); i++)
         {
-            mvwprintw(_window, 1 + i + _margin.y, 1 + _margin.x, "%s", _titles.at(i).c_str());
+            mvwprintw(_window, 1 + i + _margin.y, 1 + _margin.x, "%s", addSpaces(_titles.at(i), _itemDisplayWidth+2, LEFT).c_str());
         }
-        // Adding title line seperator
-        int width = getmaxx(_window);
-        int y = 1 + _titles.size() + _margin.y,
-            x1 = _margin.x,
-            x2 = width - 2;
-        // mvwhline(_window, y, x1+1, 0, x2);
-        // mvwaddch(_window, y, 1 + x2, ACS_RTEE);
-        //whline(_window, WACS_HLINE,x2);
-        
-        mvwhline_set(_window, y, x1+1, WACS_HLINE, x2);
-        mvwadd_wch(_window, y, 0,     WACS_LTEE);
-        mvwadd_wch(_window, y, 1+x2,  WACS_RTEE);
+        if (_showBox)
+        {
+            //Adding title line seperator 
+            int width = getmaxx(_window);
+            int y = 1 + _titles.size() + _margin.y,
+                x1 = _margin.x,
+                x2 = width - 2;
+            // mvwhline(_window, y, x1 + 1, 0, x2);
+            // mvwaddch(_window, y, 1 + x2, ACS_RTEE);
+            // whline(_window, WACS_HLINE, x2);
+            mvwhline_set(_window, y, x1 + 1, WACS_HLINE, x2);
+            mvwadd_wch(_window, y, 0, WACS_LTEE);
+            mvwadd_wch(_window, y, 1 + x2, WACS_RTEE);
+        }
     }
-
-    
 }
 
 /**
@@ -253,11 +263,10 @@ int MenuMaker::askUser(int startSelection)
     menuWidth = _itemDisplayWidth + 4;
     int height = (_menuItems.size() + 2) + (_margin.y * 2),
         width = (menuWidth) + (_margin.x * 2);
-    // TODO Add space for title lines seperator
     if (_titles.size() > 0)
     {
-        _menuMargin.y += _titles.size();
-        height += _titles.size();
+        _menuMargin.y += _titles.size() + _showBox;
+        height += _titles.size() + _showBox;
         size_t longest = 0;
         for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
         {
