@@ -48,7 +48,6 @@ void TerminalOutput::printHelp(const char *appName)
     {
         str = str.substr(i + 1);
     }
-    //TODO: Add hMargin and vMargin.
     //info about notation: https://www.youtube.com/watch?v=pXhcPJK5cMc (http://docopt.org/)
     println("Usage: ", str.c_str(), " [OPTIONS]...  -menu <menuLine>...");
     println("Usage: ", str.c_str(), " [-align <hAlign>] [OPTIONS]...  -menu <menuLine>...");

@@ -11,9 +11,9 @@
             "program": "${fileDirname}/${fileBasenameNoExtension}",
             "args": [   
                 "-title",
-                "X Vinsamlegast veldur",
-                "ruglaða línu mann andskoti bla boffi",
-                "Síðasta línan dude",
+                "",
+                " Hvað er val þitt? ",
+                "",
                 "-pos", "middle", "center", 
                 "-fg", "blue", 
                 "-fg_sel", "yellow", 

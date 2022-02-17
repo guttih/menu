@@ -133,10 +133,27 @@ void MenuMaker::showMenu()
 
 void MenuMaker::showTitle()
 {
-    for ( size_t i = 0; i < _titles.size(); i++)
+    if (_titles.size() > 0)
     {
-        mvwprintw(_window, 1 +i+ _margin.y, 1+_margin.x, "%s", _titles.at(i).c_str());
+        for (size_t i = 0; i < _titles.size(); i++)
+        {
+            mvwprintw(_window, 1 + i + _margin.y, 1 + _margin.x, "%s", _titles.at(i).c_str());
+        }
+        // Adding title line seperator
+        int width = getmaxx(_window);
+        int y = 1 + _titles.size() + _margin.y,
+            x1 = _margin.x,
+            x2 = width - 2;
+        // mvwhline(_window, y, x1+1, 0, x2);
+        // mvwaddch(_window, y, 1 + x2, ACS_RTEE);
+        //whline(_window, WACS_HLINE,x2);
+        
+        mvwhline_set(_window, y, x1+1, WACS_HLINE, x2);
+        mvwadd_wch(_window, y, 0,     WACS_LTEE);
+        mvwadd_wch(_window, y, 1+x2,  WACS_RTEE);
     }
+
+    
 }
 
 /**
@@ -236,19 +253,19 @@ int MenuMaker::askUser(int startSelection)
     menuWidth = _itemDisplayWidth + 4;
     int height = (_menuItems.size() + 2) + (_margin.y * 2),
         width = (menuWidth) + (_margin.x * 2);
-
+    // TODO Add space for title lines seperator
     if (_titles.size() > 0)
     {
         _menuMargin.y += _titles.size();
-        height+=_titles.size();
+        height += _titles.size();
         size_t longest = 0;
         for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
         {
             if ((*it).length() > longest)
                 longest = (*it).length();
         }
-            if (menuWidth < (int)longest)
-                width += longest - menuWidth;
+        if (menuWidth < (int)longest)
+            width += longest - menuWidth;
     }
     initscr();
 
@@ -265,7 +282,7 @@ int MenuMaker::askUser(int startSelection)
     keypad(_window, true);
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     if (_showBox)
-        rectangle(0, 0, height-1, width - 1);
+        rectangle(0, 0, height - 1, width - 1);
     // box(_window, 0, 0);
     wrefresh(_window);
     showTitle();
