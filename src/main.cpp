@@ -32,6 +32,7 @@ int main(int argc, char const *argv[])
     menu.setPosition(parser.getPosition());
     menu.setMargin(parser.getMargin());
     menu.setTitle(parser.getTitle());
+    menu.setDescriptions(parser.getMenuOptionsDescription());
 
     int ret = menu.askUser(1);
     if (!parser.isQuiet())

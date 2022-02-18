@@ -50,6 +50,7 @@ private:
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
     vector<string> _titles;
+    vector<string> _descriptions;
     bool _showBox=false;
     POINT _margin={0,0};
     POINT _menuMargin={0,0};
@@ -66,6 +67,7 @@ private:
     static int strDisplayLen(const char *p);
     void rectangle(int y1, int x1, int y2, int x2);
     void showTitle();
+    void showDescription(int itemIndex);
     void showMenu();
     void showSelection(int index);
     POINT calculateMenuPosition(POINT maxXY, POINT menuWidthHeight);
@@ -77,6 +79,7 @@ public:
     void addItem(string);
     int addItems(vector<string> options, HORIZONTAL_ALIGNMENT align);
     void setTitle(vector<string>  titleStrings);
+    void setDescriptions(vector<string>  itemDescriptions);
     void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
     void setShowBox(bool show)                      { _showBox=show; }
     void setMenuColor(COLORPAIR pair);

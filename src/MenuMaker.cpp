@@ -9,9 +9,23 @@ MenuMaker::MenuMaker(vector<string> options, HORIZONTAL_ALIGNMENT align)
 }
 void MenuMaker::setTitle(vector<string> titleStrings)
 {
+    // TODO: allow perferred with on the menu,  If this allowed we need to allow linebreaks in the title which will increase the menu height.
     _titles = titleStrings;
     int displayLen;
     for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
+    {
+        displayLen = strDisplayLen((*it).c_str());
+        if (displayLen > _itemDisplayWidth)
+            _itemDisplayWidth = displayLen;
+    }
+}
+
+void MenuMaker::setDescriptions(vector<string> descriptions)
+{
+    // TODO: allow perferred with on the menu,  If this allowed we need to allow linebreaks in the description which will increase the menu height.
+    _descriptions = descriptions;
+    int displayLen;
+    for (vector<string>::iterator it = _descriptions.begin(); it != _descriptions.end(); it++)
     {
         displayLen = strDisplayLen((*it).c_str());
         if (displayLen > _itemDisplayWidth)
@@ -140,6 +154,32 @@ void MenuMaker::showMenu()
         showItem(i, true);
     }
 }
+void MenuMaker::showDescription(int itemIndex)
+{
+    if (_descriptions.size() < 1)
+        return;
+
+    string str  = (itemIndex < _descriptions.size()) 
+                ? _descriptions.at(itemIndex)
+                : "";
+
+    int width, height;
+    getmaxyx(_window, height, width);
+    mvwprintw(_window, height - _margin.y - 2, 1 + _margin.x, "%s", addSpaces(str, _itemDisplayWidth + 2, LEFT).c_str());
+    wrefresh(_window);
+    if (_showBox)
+    {
+        int y = height - 3 - _margin.y,
+            x1 = _margin.x,
+            x2 = width - 2;
+        mvwhline_set(_window, y, x1 + 1, WACS_HLINE, x2);
+        wrefresh(_window);
+        mvwadd_wch(_window, y, 0, WACS_LTEE);
+        wrefresh(_window);
+        mvwadd_wch(_window, y, 1 + x2, WACS_RTEE);
+        wrefresh(_window);
+    }
+}
 
 void MenuMaker::showTitle()
 {
@@ -147,11 +187,11 @@ void MenuMaker::showTitle()
     {
         for (size_t i = 0; i < _titles.size(); i++)
         {
-            mvwprintw(_window, 1 + i + _margin.y, 1 + _margin.x, "%s", addSpaces(_titles.at(i), _itemDisplayWidth+2, LEFT).c_str());
+            mvwprintw(_window, 1 + i + _margin.y, 1 + _margin.x, "%s", addSpaces(_titles.at(i), _itemDisplayWidth + 2, LEFT).c_str());
         }
         if (_showBox)
         {
-            //Adding title line seperator 
+            // Adding title line seperator
             int width = getmaxx(_window);
             int y = 1 + _titles.size() + _margin.y,
                 x1 = _margin.x,
@@ -221,6 +261,7 @@ void MenuMaker::showSelection(int index)
     }
     lastIndex = index;
     surroundItemWith(index, _selectionSymbolFront, _selectionSymbolEnd);
+    showDescription(index);
 }
 
 POINT MenuMaker::calculateMenuPosition(POINT max, POINT menu)
@@ -267,14 +308,18 @@ int MenuMaker::askUser(int startSelection)
     {
         _menuMargin.y += _titles.size() + _showBox;
         height += _titles.size() + _showBox;
-        size_t longest = 0;
-        for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
-        {
-            if ((*it).length() > longest)
-                longest = (*it).length();
-        }
-        if (menuWidth < (int)longest)
-            width += longest - menuWidth;
+        // size_t longest = 0;
+        // for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
+        // {
+        //     if ((*it).length() > longest)
+        //         longest = (*it).length();
+        // }
+        // if (menuWidth < (int)longest)
+        //     width += longest - menuWidth;
+    }
+    if (_descriptions.size() > 0)
+    {
+        height += 1 + _showBox;
     }
     initscr();
 

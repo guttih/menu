@@ -56,11 +56,13 @@ void TerminalOutput::printHelp(const char *appName)
     println("Usage: ", str.c_str(), " [-pos <vAlign> <hAlign> ] [OPTIONS]... -menu <menuLine>...");
     println("Usage: ", str.c_str(), " [-margin <vMargin> <hMargin> ] [OPTIONS]... -menu <menuLine>...");
     println("Usage: ", str.c_str(), " [-title  <titleLine>... ] [OPTIONS]... -menu <menuLine>...");
+    println("Usage: ", str.c_str(), " [-lineDesc  <descLine>... ] [OPTIONS]... -menu <menuLine>...");
     println("  Ask the user to select between options");
     println();
     println("OPTIONS     Option description");
     println("  -help     Prints this help page");
-    println("  -title    A title displayed above them menu.  This option must be followed by a titleLine(s).");
+    println("  -title    A title displayed above them menu.  This option must be followed by titleLine argument(s).");
+    println("  -lineDes  Description for selected line.  This option must be followed by lineDesc argument(s).");
     println(" -align     Alignment of each menuLine. This option must be followed hAlign argument");
     println("  -fg       Set forground color of the menu. This option must be follwed by a color argument.");
     println("  -bg       Set background color of the menu. This option must be follwed by a color argument.");
@@ -81,7 +83,11 @@ void TerminalOutput::printHelp(const char *appName)
     println("ARGUMENTS    Argument description");
     println("  menuLine   Text of each selectable item displayed in the menu.  Best to have this a double quoted text.");
     println("  titleLine  Text displayed above the menu.  Best to double quote and align by using spaces within quotes.");
+    println("             Do not start a titleLine with the '-' character.");
+    println("  descLine   Text displayed below the menu.  Best to double quote and align by using spaces within quotes.");
     println("             No line is allowed to start with the character '-' because it will be considered a option.");
+    println("             Do not start a descLine with the '-' character.");
+    println("             These arguments should have the same count as the menuLine arguments.");
     println("  c1         Character in front of or surrounding selected menuLine.");
     println("  c2         Character at end of the selected menuLine.");
     println("  color      Must be one of the following keywords:");

@@ -159,6 +159,24 @@ void ArgumentParser::parseArguments()
                 it--; //We have an option we need to process.
 
         }
+        else if (*it == "-lineDesc")
+        {   _itemDescription.clear();
+            it++;
+            if (it == _arguments.end() )
+            {
+                _optInvalid = true;
+                _errorString = "lineDesc must be followed by a string";
+                return;
+            }
+            _itemDescription.push_back(*it);
+            while ( (*(++it)).rfind("-") != 0 && it != _arguments.end() )
+            {
+                _itemDescription.push_back(*it);
+            }
+            if (it != _arguments.end())
+                it--; //We have an option we need to process.
+
+        }
         else if (*it == "-q" || *it == "-quiet")
         {
             _optQuiet = true;

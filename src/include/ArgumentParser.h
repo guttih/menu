@@ -29,6 +29,8 @@ class ArgumentParser
 private:
     vector<string> _arguments;
     vector<string> _menuItems;
+    vector<string> _titles;
+    vector<string> _itemDescription;
     bool _optHelp = false;
     bool _optInvalid = false;
     bool _optSelectSymbol = false;
@@ -38,7 +40,6 @@ private:
     SCREEN_ALIGNMENT _optPos={TOP, LEFT };
     POINT _optMargin={0,0};
     string _errorString;
-    vector<string> _titles;
     char _selectSymbolFront = '*';
     char _selectSymbolEnd   = '*';
     COLORPAIR _colorMenu     = { -1, -1 }; 
@@ -52,6 +53,7 @@ public:
     bool isSelectSymbol() { return _optSelectSymbol; }
     char getSelectSymbol(bool frontSymbol);
     vector<string> getTitle(){return _titles; }
+    vector<string> getMenuOptionsDescription(){return _itemDescription; }
     COLORPAIR getMenuColor()    { return _colorMenu;     }
     COLORPAIR getSelectedColor(){ return _colorSelected;}
     POINT getMargin(){return _optMargin;}

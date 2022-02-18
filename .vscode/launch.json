@@ -23,6 +23,13 @@
                 "-align",
                 "center",
                 // "-margin", "0", "0",
+                
+                "-lineDesc",
+                "Já, þetta er sko lína 1", 
+                "...Og þetta lína 2", 
+                "Þrír kemur á eftir einn og tveir", 
+                "33 kemur bara út í bláinn",
+                "Þessi dúddi er að reyna að hamra saman þennan blessaða kóða.",
                 "-menu",
                 "Lina1", 
                 "Lína2", 
