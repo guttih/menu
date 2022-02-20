@@ -36,6 +36,7 @@ private:
     bool _optSelectSymbol = false;
     bool _optQuiet = false;
     bool _optBox=false;
+    int _width=0;
     HORIZONTAL_ALIGNMENT _alignment = LEFT;
     SCREEN_ALIGNMENT _optPos={TOP, LEFT };
     POINT _optMargin={0,0};
@@ -57,6 +58,7 @@ public:
     COLORPAIR getMenuColor()    { return _colorMenu;     }
     COLORPAIR getSelectedColor(){ return _colorSelected;}
     POINT getMargin(){return _optMargin;}
+    int getWidth(){return _width; }
     bool isPrintHelp() { return _optHelp; }
     bool isQuiet() { return _optQuiet; }
     bool isBox() { return _optBox; }

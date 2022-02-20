@@ -49,14 +49,16 @@ void TerminalOutput::printHelp(const char *appName)
         str = str.substr(i + 1);
     }
     //info about notation: https://www.youtube.com/watch?v=pXhcPJK5cMc (http://docopt.org/)
+    //double dashes? https://youtu.be/pXhcPJK5cMc?t=959
     println("Usage: ", str.c_str(), " [OPTIONS]...  -menu <menuLine>...");
     println("Usage: ", str.c_str(), " [-align <hAlign>] [OPTIONS]...  -menu <menuLine>...");
     println("Usage: ", str.c_str(), " [-c ( <c1> | <c1> <c2> )]  [OPTIONS]... -menu <menuLine>...");
-    println("Usage: ", str.c_str(), " [-fg <color> | -bg <color> | -fg_sel <color> | -bg_sel <color>]...  [OPTIONS]... -menu <menuLine>...");
-    println("Usage: ", str.c_str(), " [-pos <vAlign> <hAlign> ] [OPTIONS]... -menu <menuLine>...");
-    println("Usage: ", str.c_str(), " [-margin <vMargin> <hMargin> ] [OPTIONS]... -menu <menuLine>...");
-    println("Usage: ", str.c_str(), " [-title  <titleLine>... ] [OPTIONS]... -menu <menuLine>...");
-    println("Usage: ", str.c_str(), " [-lineDesc  <descLine>... ] [OPTIONS]... -menu <menuLine>...");
+    println("Usage: ", str.c_str(), " [-fg <color> | -bg <color> | -fg_sel <color> | -bg_sel <color>]... [OPTIONS]... -menu <menuLine>...");
+    println("Usage: ", str.c_str(), " [-pos <vAlign> <hAlign>] [OPTIONS]... -menu <menuLine>...");
+    println("Usage: ", str.c_str(), " [-margin <vMargin> <hMargin>] [OPTIONS]... -menu <menuLine>...");
+    println("Usage: ", str.c_str(), " [-title  <titleLine>...] [OPTIONS]... -menu <menuLine>...");
+    println("Usage: ", str.c_str(), " [-lineDesc  <descLine>...] [OPTIONS]... -menu <menuLine>...");
+    println("Usage: ", str.c_str(), " [-width  <width_num>] [OPTIONS]... -menu <menuLine>...");
     println("  Ask the user to select between options");
     println();
     println("OPTIONS     Option description");
@@ -74,6 +76,7 @@ void TerminalOutput::printHelp(const char *appName)
     println("  -q        Do not print selection number");
     println("  -margin   Outer margin.  This option must be followed by a vMargin and hMargin arguments.");
     println("  -pos      Menu position on the screen. This option must be followed by a vAlign and hAlign arguments.");
+    println("  -width    Set the total width of the menu.  This option must be followed by the with_num argument.");
     println("  -box      Surround menu with a box.");
     println
     ();
@@ -96,5 +99,8 @@ void TerminalOutput::printHelp(const char *appName)
     println("  hAlign     Horizontal alignment can be one of these keywords left, center or right.");
     println("  vMargin    A number representing the vertical margin of the menu.");
     println("  hMargin    A number representing the horizontal margin of the menu.");
+    println("  width_num  A number representing the total width of the menu. Note that, this number will be ignored If ");
+    println("             it is lower than the with needed to display the longest menuLine.");
+    
     println();
 }

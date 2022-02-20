@@ -48,7 +48,7 @@ declare exe="out/menu"
 if [ ! -f "$exe" ]; then  echo "${errorColor}Error excutable does not exist${norm}"; exit 1; fi;
 
 echo "Please use arrow keys to selecte between options:"
-$exe   "Option 1" "Option two"  "And some word in Icelandic, Á íslensku"
+$exe   -menu "Option 1" "Option two"  "And some word in Icelandic, Á íslensku"
 case $? in
 
     0) echo "Nothing was selected" ;;

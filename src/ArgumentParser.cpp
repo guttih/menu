@@ -233,6 +233,18 @@ void ArgumentParser::parseArguments()
             }
             _optMargin.x = margin;
         } // else if (*it == "-margin")
+        else if (*it == "-width")
+        {
+            it++;
+            int width;
+            if (it == _arguments.end() || (width = getNumberValue(*it)) < 0)
+            {
+                _optInvalid = true;
+                _errorString = "-width must be followed by a number.";
+                return;
+            }
+            _width = width;
+        }
         else if (*it == "-c")
         {
             it++;

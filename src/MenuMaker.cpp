@@ -7,6 +7,94 @@ MenuMaker::MenuMaker(vector<string> options, HORIZONTAL_ALIGNMENT align)
 {
     addItems(options, align);
 }
+
+string ReplaceAll(string str, const string &from, const string &to)
+{
+    size_t start_pos = 0;
+    while ((start_pos = str.find(from, start_pos)) != string::npos)
+    {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
+}
+vector<string> MenuMaker::adjustDescriptionWidths(vector<string> strings, int width)
+{
+    if (width == _width)
+        return strings;
+
+    vector<string> ret;
+    int descriptionHeight = 1;
+    size_t found;
+    string whitespaces("\f\v\n\r"),
+        longString = "",
+        temp,
+        newString;
+    for (vector<string>::iterator it = strings.begin(); it != strings.end(); it++)
+    {
+        longString = *it;
+        // replace all white spaces with space
+        while ((found = longString.find_first_of(whitespaces)) != string::npos)
+        {
+            temp = "" + longString.at(found);
+            longString = ReplaceAll(longString, temp, " ");
+        }
+        // remove all double spaces
+        while (longString.find("  ") != string::npos)
+            longString = ReplaceAll(longString, "  ", " ");
+
+        // split to long lines into many lines if needed
+        bool goOn = (strDisplayLen(longString.c_str()) > width);
+        newString = "";
+        int endLines = 0;
+        while (goOn)
+        {
+            temp = longString.substr(0, width);
+            found = temp.find_last_of(" ");
+            string str = longString.substr(0, found);
+            newString += str;
+            longString = longString.substr(found + 1);
+            goOn = (strDisplayLen(longString.c_str()) > width);
+            endLines++;
+            newString += '\n';
+        }
+        newString += longString;
+        ret.push_back(newString);
+        if (endLines + 1 > descriptionHeight)
+            descriptionHeight = endLines + 1;
+    }
+
+    _descriptionHeight = descriptionHeight;
+
+    return ret;
+}
+
+int MenuMaker::getMenuMinimumDisplayWidth(){
+    int temp,minWidth = 0;
+    for(vector<string>::iterator it=_titles.begin(); it!= _titles.end(); it++) {
+        temp = strDisplayLen((*it).c_str());
+        if (temp > minWidth)
+            minWidth = temp;
+    }
+    for(vector<string>::iterator it=_menuItems.begin(); it!= _menuItems.end(); it++) {
+        temp = strDisplayLen((*it).c_str());
+        if (temp > minWidth)
+            minWidth = temp;
+    }
+    return minWidth;
+}
+void MenuMaker::setWidth(int width)
+{
+    if (width != _width)
+    {
+        int minWidthAllowed=getMenuMinimumDisplayWidth();
+        if (width < minWidthAllowed)
+            width = minWidthAllowed;
+        _descriptions = adjustDescriptionWidths(_descriptions, width);
+        _itemDisplayWidth=width;
+        _width = width+2;
+    }
+}
 void MenuMaker::setTitle(vector<string> titleStrings)
 {
     // TODO: allow perferred with on the menu,  If this allowed we need to allow linebreaks in the title which will increase the menu height.
@@ -102,16 +190,16 @@ int MenuMaker::getAlignIndex(string source, int desiredLength, HORIZONTAL_ALIGNM
     int len = strDisplayLen(source.c_str());
     int spaces = desiredLength - len;
     if (spaces < 0 || align == LEFT)
-        return 0;
+        return _margin.x;
 
     if (align == RIGHT)
-        return spaces;
+        return spaces+_margin.x;
     else
     {
         // CENTER
         bool isOdd = (spaces % 2 != 0);
         spaces /= 2;
-        return spaces + (isOdd & oddAlignmentSpaceInFront);
+        return _margin.x+spaces + (isOdd & oddAlignmentSpaceInFront);
     }
 }
 /**
@@ -134,16 +222,18 @@ void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
     string temp;
     if (addSpacesAroundItem)
     {
-        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth + (_margin.x * 2), _align);
-        offset = 0;
+        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth + (_margin.x *2), _align);
+        offset = _margin.x;
     }
     else
     {
         temp = _menuItems.at(itemIndex);
-        offset = getAlignIndex(temp.c_str(), _itemDisplayWidth + (_margin.x * 2), _align, false);
+        offset = getAlignIndex(temp.c_str(), _itemDisplayWidth, _align, false);
+        offset+=0;//_margin.x;
     }
 
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 2 + offset, "%s", temp.c_str());
+    wrefresh(_window);
 }
 void MenuMaker::showMenu()
 {
@@ -151,26 +241,56 @@ void MenuMaker::showMenu()
     for (unsigned int i = 0; i < _menuItems.size(); i++)
     {
         surroundItemClear(i);
-        showItem(i, true);
+        showItem(i, false);
+        
     }
+}
+
+int countOccurrences(string s, char c)
+{
+    int count = 0;
+
+    for (size_t i = 0; i < s.size(); i++)
+        if (s[i] == c)
+            count++;
+
+    return count;
 }
 void MenuMaker::showDescription(int itemIndex)
 {
     if (_descriptions.size() < 1)
         return;
 
-    string str  = (itemIndex < _descriptions.size()) 
-                ? _descriptions.at(itemIndex)
-                : "";
+    string temp, str = (itemIndex < (int)_descriptions.size())
+                           ? _descriptions.at(itemIndex)
+                           : "";
 
+    POINT location;
     int width, height;
+    size_t found;
     getmaxyx(_window, height, width);
-    mvwprintw(_window, height - _margin.y - 2, 1 + _margin.x, "%s", addSpaces(str, _itemDisplayWidth + 2, LEFT).c_str());
-    wrefresh(_window);
+    for (int i = 0; i < _descriptionHeight; i++)
+    {
+        found = str.find('\n');
+        if (found != string::npos)
+        {
+            temp = str.substr(0, found);
+            str = str.substr(found + 1);
+        }
+        else
+        {
+            temp = str;
+            str = "";
+        }
+        location.y = height - _margin.y - 1 - (_descriptionHeight - i);
+        location.x = _margin.x+1;
+        mvwprintw(_window, location.y, location.x, "%s", addSpaces(temp, _itemDisplayWidth + 2, LEFT).c_str());
+        wrefresh(_window);
+    }
     if (_showBox)
     {
-        int y = height - 3 - _margin.y,
-            x1 = _margin.x,
+        int y = height - 2 - _descriptionHeight - _margin.y,
+            x1 = _menuMargin.x,
             x2 = width - 2;
         mvwhline_set(_window, y, x1 + 1, WACS_HLINE, x2);
         wrefresh(_window);
@@ -180,7 +300,13 @@ void MenuMaker::showDescription(int itemIndex)
         wrefresh(_window);
     }
 }
-
+void MenuMaker::paintBackground(int height, int width) {
+    for(int i = 0; i<height; i++)
+    {
+        mvwprintw(_window, i,0, "%s", addSpaces("", width,LEFT).c_str());
+        wrefresh(_window);
+    }
+}
 void MenuMaker::showTitle()
 {
     if (_titles.size() > 0)
@@ -193,8 +319,8 @@ void MenuMaker::showTitle()
         {
             // Adding title line seperator
             int width = getmaxx(_window);
-            int y = 1 + _titles.size() + _margin.y,
-                x1 = _margin.x,
+            int y = 1 + _titles.size()+_margin.y,
+                x1 = 0,
                 x2 = width - 2;
             // mvwhline(_window, y, x1 + 1, 0, x2);
             // mvwaddch(_window, y, 1 + x2, ACS_RTEE);
@@ -239,14 +365,16 @@ void MenuMaker::surroundItemClear(int itemIndex)
 {
     char clear = ' ';
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
-    showItem(itemIndex, true);
+    showItem(itemIndex, false);
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 1 + _margin.x, "%c", clear);
+    wrefresh(_window);
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, _itemDisplayWidth + 2 + _margin.x, "%c", clear);
+    wrefresh(_window);
 }
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
     wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
-    showItem(itemIndex, false);
+    //showItem(itemIndex, false);
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 1 + _margin.x, "%c", front);
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, _itemDisplayWidth + 2 + _margin.x, "%c", back);
@@ -261,6 +389,9 @@ void MenuMaker::showSelection(int index)
     }
     lastIndex = index;
     surroundItemWith(index, _selectionSymbolFront, _selectionSymbolEnd);
+    wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
+    showItem(index, false);
+    wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     showDescription(index);
 }
 
@@ -319,7 +450,7 @@ int MenuMaker::askUser(int startSelection)
     }
     if (_descriptions.size() > 0)
     {
-        height += 1 + _showBox;
+        height += _descriptionHeight + _showBox;
     }
     initscr();
 
@@ -335,9 +466,9 @@ int MenuMaker::askUser(int startSelection)
     curs_set(0);
     keypad(_window, true);
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
+    paintBackground(height, width);
     if (_showBox)
         rectangle(0, 0, height - 1, width - 1);
-    // box(_window, 0, 0);
     wrefresh(_window);
     showTitle();
     showMenu();

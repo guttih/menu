@@ -46,6 +46,8 @@ class MenuMaker
 private:
     vector<string> _menuItems;
     int _selected = -1;
+    int _width=0;
+    int _descriptionHeight=1;
     int _itemDisplayWidth = 0;
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
@@ -67,10 +69,13 @@ private:
     static int strDisplayLen(const char *p);
     void rectangle(int y1, int x1, int y2, int x2);
     void showTitle();
+    void paintBackground(int height, int width);
     void showDescription(int itemIndex);
     void showMenu();
     void showSelection(int index);
     POINT calculateMenuPosition(POINT maxXY, POINT menuWidthHeight);
+    vector<string> adjustDescriptionWidths(vector<string> strings, int width);
+    int getMenuMinimumDisplayWidth();
     
 public:
     MenuMaker(vector<string>options, HORIZONTAL_ALIGNMENT align);
@@ -87,6 +92,7 @@ public:
     void setAlignment(HORIZONTAL_ALIGNMENT align){ _align=align;}
     void setPosition(SCREEN_ALIGNMENT screenAlignment){ _screenPosition.horizontal=screenAlignment.horizontal; _screenPosition.vertical = screenAlignment.vertical;}
     void setMargin(POINT margin){_margin.x=margin.x; _margin.y=margin.y;};
+    void setWidth(int width);
 };
 
 
