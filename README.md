@@ -15,7 +15,7 @@ declare exe="out/menu"
 if [ ! -f "$exe" ]; then  echo "Error excutable does not exist"; exit 1; fi;
 
 
-$exe  -menu "Option 1" "Option two"  "And some word in Icelandic, á íslensku"
+$exe  -lines "Option 1" "Option two"  "And some word in Icelandic, á íslensku"
 case $? in
 
     0) echo "Nothing was selected" ;;

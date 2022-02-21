@@ -431,7 +431,7 @@ POINT MenuMaker::calculateMenuPosition(POINT max, POINT menu)
 int MenuMaker::askUser(int startSelection)
 {
     int yMax, xMax, menuWidth;
-    // https://techlister.com/linux/creating-menu-with-ncurses-in-c/
+    // https://techlister.com/linux/creating-lines-with-ncurses-in-s/
     menuWidth = _itemDisplayWidth + 4;
     int height = (_menuItems.size() + 2) + (_margin.y * 2),
         width = (menuWidth) + (_margin.x * 2);

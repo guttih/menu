@@ -131,7 +131,7 @@ void ArgumentParser::parseArguments()
             _menuItems.push_back(*it);
             _arguments.erase(it--);
         }
-        else if (*it == "-menu")
+        else if (*it == "-lines")
         {
             _arguments.erase(it--);
             foundMenuOption = true;
@@ -159,13 +159,13 @@ void ArgumentParser::parseArguments()
                 it--; //We have an option we need to process.
 
         }
-        else if (*it == "-lineDesc")
+        else if (*it == "-descriptions")
         {   _itemDescription.clear();
             it++;
             if (it == _arguments.end() )
             {
                 _optInvalid = true;
-                _errorString = "lineDesc must be followed by a string";
+                _errorString = "descriptions must be followed by a string";
                 return;
             }
             _itemDescription.push_back(*it);
@@ -245,14 +245,14 @@ void ArgumentParser::parseArguments()
             }
             _width = width;
         }
-        else if (*it == "-c")
+        else if (*it == "-s")
         {
             it++;
             _optSelectSymbol = true;
             if (it->length() != 1)
             {
                 _optInvalid = true;
-                _errorString = "-c must be followed by a character";
+                _errorString = "-s must be followed by a character";
                 return;
             }
             _selectSymbolEnd = _selectSymbolFront = it->at(0);
