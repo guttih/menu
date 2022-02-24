@@ -69,14 +69,17 @@ vector<string> MenuMaker::adjustDescriptionWidths(vector<string> strings, int wi
     return ret;
 }
 
-int MenuMaker::getMenuMinimumDisplayWidth(){
-    int temp,minWidth = 0;
-    for(vector<string>::iterator it=_titles.begin(); it!= _titles.end(); it++) {
+int MenuMaker::getMenuMinimumDisplayWidth()
+{
+    int temp, minWidth = 0;
+    for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
+    {
         temp = strDisplayLen((*it).c_str());
         if (temp > minWidth)
             minWidth = temp;
     }
-    for(vector<string>::iterator it=_menuItems.begin(); it!= _menuItems.end(); it++) {
+    for (vector<string>::iterator it = _menuItems.begin(); it != _menuItems.end(); it++)
+    {
         temp = strDisplayLen((*it).c_str());
         if (temp > minWidth)
             minWidth = temp;
@@ -87,12 +90,12 @@ void MenuMaker::setWidth(int width)
 {
     if (width != _width)
     {
-        int minWidthAllowed=getMenuMinimumDisplayWidth();
+        int minWidthAllowed = getMenuMinimumDisplayWidth();
         if (width < minWidthAllowed)
             width = minWidthAllowed;
         _descriptions = adjustDescriptionWidths(_descriptions, width);
-        _itemDisplayWidth=width;
-        _width = width+2;
+        _itemDisplayWidth = width;
+        _width = width + 2;
     }
 }
 void MenuMaker::setTitle(vector<string> titleStrings)
@@ -193,13 +196,13 @@ int MenuMaker::getAlignIndex(string source, int desiredLength, HORIZONTAL_ALIGNM
         return _margin.x;
 
     if (align == RIGHT)
-        return spaces+_margin.x;
+        return spaces + _margin.x;
     else
     {
         // CENTER
         bool isOdd = (spaces % 2 != 0);
         spaces /= 2;
-        return _margin.x+spaces + (isOdd & oddAlignmentSpaceInFront);
+        return _margin.x + spaces + (isOdd & oddAlignmentSpaceInFront);
     }
 }
 /**
@@ -222,14 +225,14 @@ void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
     string temp;
     if (addSpacesAroundItem)
     {
-        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth + (_margin.x *2), _align);
+        temp = addSpaces(_menuItems.at(itemIndex), _itemDisplayWidth + (_margin.x * 2), _align);
         offset = _margin.x;
     }
     else
     {
         temp = _menuItems.at(itemIndex);
         offset = getAlignIndex(temp.c_str(), _itemDisplayWidth, _align, false);
-        offset+=0;//_margin.x;
+        offset += 0; //_margin.x;
     }
 
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 2 + offset, "%s", temp.c_str());
@@ -238,11 +241,11 @@ void MenuMaker::showItem(unsigned int itemIndex, bool addSpacesAroundItem)
 void MenuMaker::showMenu()
 {
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
+
     for (unsigned int i = 0; i < _menuItems.size(); i++)
     {
         surroundItemClear(i);
         showItem(i, false);
-        
     }
 }
 
@@ -283,7 +286,7 @@ void MenuMaker::showDescription(int itemIndex)
             str = "";
         }
         location.y = height - _margin.y - 1 - (_descriptionHeight - i);
-        location.x = _margin.x+1;
+        location.x = _margin.x + 1;
         mvwprintw(_window, location.y, location.x, "%s", addSpaces(temp, _itemDisplayWidth + 2, LEFT).c_str());
         wrefresh(_window);
     }
@@ -300,12 +303,16 @@ void MenuMaker::showDescription(int itemIndex)
         wrefresh(_window);
     }
 }
-void MenuMaker::paintBackground(int height, int width) {
-    for(int i = 0; i<height; i++)
+
+void MenuMaker::paintBackground(int height, int width)
+{
+    string wipe = string(width - 1, ' ');
+    for (int i = 0; i < height; i++)
     {
-        mvwprintw(_window, i,0, "%s", addSpaces("", width,LEFT).c_str());
-        wrefresh(_window);
+        // problem if just printing spaces in terminal, so that's why I add the dot in front of %s
+        mvwprintw(_window, i, _menuMargin.x, ".%s", wipe.c_str());
     }
+    wrefresh(_window);
 }
 void MenuMaker::showTitle()
 {
@@ -319,7 +326,7 @@ void MenuMaker::showTitle()
         {
             // Adding title line seperator
             int width = getmaxx(_window);
-            int y = 1 + _titles.size()+_margin.y,
+            int y = 1 + _titles.size() + _margin.y,
                 x1 = 0,
                 x2 = width - 2;
             // mvwhline(_window, y, x1 + 1, 0, x2);
@@ -374,7 +381,7 @@ void MenuMaker::surroundItemClear(int itemIndex)
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
     wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
-    //showItem(itemIndex, false);
+    // showItem(itemIndex, false);
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 1 + _margin.x, "%c", front);
     mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, _itemDisplayWidth + 2 + _margin.x, "%c", back);
