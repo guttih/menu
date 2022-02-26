@@ -142,41 +142,53 @@ void ArgumentParser::parseArguments()
             return;
         }
         else if (*it == "-title")
-        {   _titles.clear();
+        {
+            _titles.clear();
             it++;
-            if (it == _arguments.end() )
+            if (it == _arguments.end())
             {
                 _optInvalid = true;
                 _errorString = "title must be followed by a string";
                 return;
             }
             _titles.push_back(*it);
-            while ( (*(++it)).rfind("-") != 0 && it != _arguments.end() )
+            while ((*(++it)).rfind("-") != 0 && it != _arguments.end())
             {
                 _titles.push_back(*it);
             }
             if (it != _arguments.end())
-                it--; //We have an option we need to process.
-
+                it--; // We have an option we need to process.
         }
         else if (*it == "-descriptions")
-        {   _itemDescription.clear();
+        {
+            _itemDescription.clear();
             it++;
-            if (it == _arguments.end() )
+            if (it == _arguments.end())
             {
                 _optInvalid = true;
                 _errorString = "descriptions must be followed by a string";
                 return;
             }
             _itemDescription.push_back(*it);
-            while ( (*(++it)).rfind("-") != 0 && it != _arguments.end() )
+            while ((*(++it)).rfind("-") != 0 && it != _arguments.end())
             {
                 _itemDescription.push_back(*it);
             }
             if (it != _arguments.end())
-                it--; //We have an option we need to process.
-
+                it--; // We have an option we need to process.
         }
+        else if (*it == "-d_title")
+        {
+            it++;
+            string title;
+            if (it == _arguments.end() || *it == "")
+            {
+                _optInvalid = true;
+                _errorString = "-d_title must be followed by some text.";
+                return;
+            }
+            _descriptionTitle = *it;
+        } // else if (*it == "-d_title")
         else if (*it == "-q" || *it == "-quiet")
         {
             _optQuiet = true;
@@ -245,6 +257,19 @@ void ArgumentParser::parseArguments()
             }
             _width = width;
         }
+        else if (*it == "-d_title_x")
+        {
+            it++;
+            int ofsetX;
+            if (it == _arguments.end() || (ofsetX = getNumberValue(*it)) < 0)
+            {
+                _optInvalid = true;
+                _errorString = "-d_title_x must be followed by a number.";
+                return;
+            }
+            _descriptionTitleOffsetX = ofsetX;
+        }
+
         else if (*it == "-s")
         {
             it++;
@@ -269,8 +294,8 @@ void ArgumentParser::parseArguments()
         }
         else if (*it == "-sw")
         {
-            _optSelectWallSymbol=true;
-            _optSelectSymbol=false;
+            _optSelectWallSymbol = true;
+            _optSelectSymbol = false;
         }
         else if (*it == "-fg")
         {

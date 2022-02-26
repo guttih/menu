@@ -20,6 +20,7 @@ string ReplaceAll(string str, const string &from, const string &to)
 }
 vector<string> MenuMaker::adjustDescriptionWidths(vector<string> strings, int width)
 {
+    //todo: we are not using all the free horizontal space in the line
     if (width == _width)
         return strings;
 
@@ -100,7 +101,6 @@ void MenuMaker::setWidth(int width)
 }
 void MenuMaker::setTitle(vector<string> titleStrings)
 {
-    // TODO: allow perferred with on the menu,  If this allowed we need to allow linebreaks in the title which will increase the menu height.
     _titles = titleStrings;
     int displayLen;
     for (vector<string>::iterator it = _titles.begin(); it != _titles.end(); it++)
@@ -109,6 +109,11 @@ void MenuMaker::setTitle(vector<string> titleStrings)
         if (displayLen > _itemDisplayWidth)
             _itemDisplayWidth = displayLen;
     }
+}
+
+void MenuMaker::setDescriptionTitle(string descriptionTitle)
+{
+    _descriptionTitle = descriptionTitle;
 }
 
 void MenuMaker::setDescriptions(vector<string> descriptions)
@@ -301,6 +306,17 @@ void MenuMaker::showDescription(int itemIndex)
         wrefresh(_window);
         mvwadd_wch(_window, y, 1 + x2, WACS_RTEE);
         wrefresh(_window);
+        if (_descriptionTitle.length() > 0)
+        {
+            int len = _descriptionTitle.length();
+            int availableSpace=width - (x1);
+            int titleSpace=len+_descriptionTitleoffsetX;
+
+            if (titleSpace < availableSpace)
+            {   //there is room for the description title
+                mvwprintw(_window, y, x1 + 1+_descriptionTitleoffsetX, "%s", _descriptionTitle.c_str());
+            }
+        }
     }
 }
 
@@ -314,7 +330,7 @@ void MenuMaker::paintBackground(int height, int width)
     }
     wrefresh(_window);
     if (!_showBox)
-    {   //Box will clear the dot's, but if no box is surrounding the menu, the dot will need to be removed
+    { // Box will clear the dot's, but if no box is surrounding the menu, the dot will need to be removed
         for (int i = 0; i < height; i++)
         { // because of problem now we need to remove the dot
             mvwprintw(_window, i, _menuMargin.x, " ");
@@ -474,7 +490,7 @@ int MenuMaker::askUser(int startSelection)
 {
     int yMax, xMax, menuWidth;
     // https://techlister.com/linux/creating-lines-with-ncurses-in-s/
-    menuWidth = _itemDisplayWidth + 4;
+    menuWidth = _itemDisplayWidth + 4; //todo: +4 is to much, but we  (title can never be centered without spaces in it)
     int height = (_menuItems.size() + 2) + (_margin.y * 2),
         width = (menuWidth) + (_margin.x * 2);
     if (_titles.size() > 0)

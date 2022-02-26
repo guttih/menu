@@ -25,7 +25,8 @@ int main(int argc, char const *argv[])
     MenuMaker menu(parser.getMenuOptions(), parser.getAlignment());
     if (parser.isSelectSymbol())
         menu.setSurroundingSymbols(parser.getSelectSymbol(true), parser.getSelectSymbol(false));
-    if (parser.isSelectWallSymbol()){
+    if (parser.isSelectWallSymbol())
+    {
         menu.setSelectWallSymbol();
     }
     menu.setShowBox(parser.isBox());
@@ -36,6 +37,11 @@ int main(int argc, char const *argv[])
     menu.setMargin(parser.getMargin());
     menu.setTitle(parser.getTitle());
     menu.setDescriptions(parser.getMenuOptionsDescription());
+    if (parser.getDescriptionTitle().length() > 0)
+    {
+        menu.setDescriptionTitle(parser.getDescriptionTitle());
+        menu.setDescriptionTitleOffsetX(parser.getDescriptionTitleOffsetX());
+    }
     menu.setWidth(parser.getWidth());
 
     int ret = menu.askUser(1);

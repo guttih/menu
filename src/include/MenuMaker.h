@@ -47,11 +47,13 @@ private:
     vector<string> _menuItems;
     int _selected = -1;
     int _width=0;
+    int _descriptionTitleoffsetX=0;
     int _descriptionHeight=1;
     int _itemDisplayWidth = 0;
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
     bool _selectWallSymbol=false;
+    string _descriptionTitle;
     vector<string> _titles;
     vector<string> _descriptions;
     bool _showBox=false;
@@ -85,6 +87,7 @@ public:
     void addItem(string);
     int addItems(vector<string> options, HORIZONTAL_ALIGNMENT align);
     void setTitle(vector<string>  titleStrings);
+    void setDescriptionTitle(string descriptionTitle);
     void setDescriptions(vector<string>  itemDescriptions);
     void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
     void setSelectWallSymbol(bool activate=true){_selectWallSymbol=activate;setSurroundingSymbols(' ', ' ');}
@@ -95,6 +98,8 @@ public:
     void setPosition(SCREEN_ALIGNMENT screenAlignment){ _screenPosition.horizontal=screenAlignment.horizontal; _screenPosition.vertical = screenAlignment.vertical;}
     void setMargin(POINT margin){_margin.x=margin.x; _margin.y=margin.y;};
     void setWidth(int width);
+    void setDescriptionTitleOffsetX(int offsetX){_descriptionTitleoffsetX=offsetX;};
+    
 };
 
 

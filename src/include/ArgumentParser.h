@@ -31,6 +31,7 @@ private:
     vector<string> _menuItems;
     vector<string> _titles;
     vector<string> _itemDescription;
+    string _descriptionTitle;
     bool _optHelp = false;
     bool _optInvalid = false;
     bool _optSelectSymbol = false;
@@ -38,6 +39,7 @@ private:
     bool _optQuiet = false;
     bool _optBox=false;
     int _width=0;
+    int _descriptionTitleOffsetX=0;
     HORIZONTAL_ALIGNMENT _alignment = LEFT;
     SCREEN_ALIGNMENT _optPos={TOP, LEFT };
     POINT _optMargin={0,0};
@@ -55,12 +57,14 @@ public:
     bool isSelectSymbol() { return _optSelectSymbol; }
     bool isSelectWallSymbol() { return _optSelectWallSymbol; }
     char getSelectSymbol(bool frontSymbol);
+    string getDescriptionTitle(){return _descriptionTitle;};
     vector<string> getTitle(){return _titles; }
     vector<string> getMenuOptionsDescription(){return _itemDescription; }
     COLORPAIR getMenuColor()    { return _colorMenu;     }
     COLORPAIR getSelectedColor(){ return _colorSelected;}
     POINT getMargin(){return _optMargin;}
     int getWidth(){return _width; }
+    int getDescriptionTitleOffsetX(){return _descriptionTitleOffsetX; }
     bool isPrintHelp() { return _optHelp; }
     bool isQuiet() { return _optQuiet; }
     bool isBox() { return _optBox; }
