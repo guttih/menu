@@ -313,6 +313,13 @@ void MenuMaker::paintBackground(int height, int width)
         mvwprintw(_window, i, _menuMargin.x, ".%s", wipe.c_str());
     }
     wrefresh(_window);
+    if (!_showBox)
+    {   //Box will clear the dot's, but if no box is surrounding the menu, the dot will need to be removed
+        for (int i = 0; i < height; i++)
+        { // because of problem now we need to remove the dot
+            mvwprintw(_window, i, _menuMargin.x, " ");
+        }
+    }
 }
 void MenuMaker::showTitle()
 {
@@ -370,21 +377,49 @@ string MenuMaker::addSpaces(string source, int desiredLength, HORIZONTAL_ALIGNME
 
 void MenuMaker::surroundItemClear(int itemIndex)
 {
+    int y = 1 + itemIndex + _menuMargin.y + _margin.y;
     char clear = ' ';
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
     showItem(itemIndex, false);
-    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 1 + _margin.x, "%c", clear);
+    mvwprintw(_window, y, 1 + _margin.x, "%c", clear);
     wrefresh(_window);
-    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, _itemDisplayWidth + 2 + _margin.x, "%c", clear);
+    mvwprintw(_window, y, _itemDisplayWidth + 2 + _margin.x, "%c", clear);
     wrefresh(_window);
+    int width = getmaxx(_window);
+    if (_showBox)
+    {
+        mvwadd_wch(_window, y, 0, WACS_VLINE);
+        mvwadd_wch(_window, y, width - 1, WACS_VLINE);
+    }
+    else
+    {
+        mvwprintw(_window, y, 0, "%c", clear);
+        mvwprintw(_window, y, width - 1, "%c", clear);
+    }
 }
 void MenuMaker::surroundItemWith(int itemIndex, char front, char back)
 {
-    wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
-    // showItem(itemIndex, false);
+    int y = 1 + itemIndex + _menuMargin.y + _margin.y;
+    if (_selectWallSymbol)
+    {
+        int width = getmaxx(_window);
+        if (_showBox)
+        {
+            mvwadd_wch(_window, y, 0, WACS_LTEE);
+            mvwadd_wch(_window, y, width - 1, WACS_RTEE);
+        }
+        else
+        {
+            mvwadd_wch(_window, y, 0, WACS_RARROW);
+            mvwadd_wch(_window, y, width - 1, WACS_LARROW);
+        }
+        return;
+    }
+    // wattron(_window, COLOR_PAIR(COLOR_PAIR_SEL));
+    //  showItem(itemIndex, false);
     wattron(_window, COLOR_PAIR(COLOR_PAIR_MENU));
-    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, 1 + _margin.x, "%c", front);
-    mvwprintw(_window, 1 + itemIndex + _menuMargin.y + _margin.y, _itemDisplayWidth + 2 + _margin.x, "%c", back);
+    mvwprintw(_window, y, 1 + _margin.x, "%c", front);
+    mvwprintw(_window, y, _itemDisplayWidth + 2 + _margin.x, "%c", back);
 }
 void MenuMaker::showSelection(int index)
 {

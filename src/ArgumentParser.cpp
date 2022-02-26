@@ -267,6 +267,11 @@ void ArgumentParser::parseArguments()
                 it--;
             }
         }
+        else if (*it == "-sw")
+        {
+            _optSelectWallSymbol=true;
+            _optSelectSymbol=false;
+        }
         else if (*it == "-fg")
         {
             it++;

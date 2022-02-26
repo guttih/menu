@@ -51,6 +51,7 @@ private:
     int _itemDisplayWidth = 0;
     char _selectionSymbolFront='>';
     char _selectionSymbolEnd  ='<';
+    bool _selectWallSymbol=false;
     vector<string> _titles;
     vector<string> _descriptions;
     bool _showBox=false;
@@ -86,6 +87,7 @@ public:
     void setTitle(vector<string>  titleStrings);
     void setDescriptions(vector<string>  itemDescriptions);
     void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
+    void setSelectWallSymbol(bool activate=true){_selectWallSymbol=activate;setSurroundingSymbols(' ', ' ');}
     void setShowBox(bool show)                      { _showBox=show; }
     void setMenuColor(COLORPAIR pair);
     void setSelectionColor(COLORPAIR pair);

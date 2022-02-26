@@ -34,6 +34,7 @@ private:
     bool _optHelp = false;
     bool _optInvalid = false;
     bool _optSelectSymbol = false;
+    bool _optSelectWallSymbol = false;
     bool _optQuiet = false;
     bool _optBox=false;
     int _width=0;
@@ -52,6 +53,7 @@ private:
 public:
     bool isValid() { return !_optInvalid; }
     bool isSelectSymbol() { return _optSelectSymbol; }
+    bool isSelectWallSymbol() { return _optSelectWallSymbol; }
     char getSelectSymbol(bool frontSymbol);
     vector<string> getTitle(){return _titles; }
     vector<string> getMenuOptionsDescription(){return _itemDescription; }

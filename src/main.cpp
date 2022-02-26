@@ -25,6 +25,9 @@ int main(int argc, char const *argv[])
     MenuMaker menu(parser.getMenuOptions(), parser.getAlignment());
     if (parser.isSelectSymbol())
         menu.setSurroundingSymbols(parser.getSelectSymbol(true), parser.getSelectSymbol(false));
+    if (parser.isSelectWallSymbol()){
+        menu.setSelectWallSymbol();
+    }
     menu.setShowBox(parser.isBox());
     menu.setMenuColor(parser.getMenuColor());
     menu.setSelectionColor(parser.getSelectedColor());

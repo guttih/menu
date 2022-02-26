@@ -65,21 +65,22 @@ void TerminalOutput::printHelp(const char *appName)
     println("  -help     Prints this help page.");
     println("  -title    A title displayed above them menu.  This option must be followed by titleLine argument(s).");
     println("  -lineDes  Description for selected line.  This option must be followed by descriptions argument(s).");
-    println(" -align     Alignment of each line. This option must be followed hAlign argument");
+    println("  -align     Alignment of each line. This option must be followed hAlign argument");
     println("  -fg       Set forground color of the menu. This option must be follwed by a color argument.");
     println("  -bg       Set background color of the menu. This option must be follwed by a color argument.");
     println("  -fg_sel   Set forground color of the selected item.  This option must be follwed by a color argument.");
     println("  -bg_sel   Set background color of the selected item.  This option must be follwed by a color argument.");
     println("  -s        Set a different symbol(s)/character(s) surrounding the selected text.");
     println("            This option must be followed by argument s1 or arguments s1 and s2.");
+    println("  -sw       Wall select symbol is displayed on the box side lines indicating symbols on which line");
+    println("            is currently selected. This option can only be in combination with the box option.");
     println("  -cq       No selection characters will be displayed in front and at end selected text.");
     println("  -q        Do not print selection number");
     println("  -margin   Outer margin.  This option must be followed by a vMargin and hMargin arguments.");
     println("  -pos      Menu position on the screen. This option must be followed by a vAlign and hAlign arguments.");
     println("  -width    Set the total width of the menu.  This option must be followed by the with_num argument.");
     println("  -box      Surround menu with a box.");
-    println
-    ();
+    println();
     println("COMMANDS    Command description");
     println("  -lines     This command must be followed by one or more line");
     println();
@@ -101,6 +102,5 @@ void TerminalOutput::printHelp(const char *appName)
     println("  hMargin    A number representing the horizontal margin of the menu.");
     println("  width_num  A number representing the total width of the menu. Note that, this number will be ignored If ");
     println("             it is lower than the with needed to display the longest line.");
-    
     println();
 }

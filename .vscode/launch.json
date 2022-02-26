@@ -10,6 +10,7 @@
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
             "args": [   
+                "-sw",
                 "-box",
                 "-title",
                 "Veldu línu með örvalyklunum á lyklaborðinu:",
@@ -18,7 +19,6 @@
                 "-bg", "green", 
                 "-fg_sel", "green", 
                 "-bg_sel", "yellow", 
-                "-box",
                 "-align", "center",
                 "-margin", "0", "1",
                 "-width", "35",
