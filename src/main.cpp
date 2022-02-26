@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
     if (!parser.isValid())
     {
         TerminalOutput::println("Error: Invalid argument: \"", parser.errorString(), "\".");
-        return 255;
+        return 0;
     }
     else if (parser.isPrintHelp())
     {
@@ -44,8 +44,8 @@ int main(int argc, char const *argv[])
     }
     menu.setWidth(parser.getWidth());
 
-    int ret = menu.askUser(1);
-    if (!parser.isQuiet())
-        cout << ret << endl;
-    return ret + 1;
+    int selectedItem = menu.askUser(1);
+    if (!parser.isQuiet() && selectedItem > -1)
+        cout << menu.getItem(selectedItem) << endl;
+    return selectedItem + 1;
 }

@@ -11,7 +11,8 @@
 
 using namespace std;
 
-struct POINT {
+struct POINT
+{
     int x;
     int y;
 };
@@ -46,24 +47,24 @@ class MenuMaker
 private:
     vector<string> _menuItems;
     int _selected = -1;
-    int _width=0;
-    int _descriptionTitleoffsetX=0;
-    int _descriptionHeight=1;
+    int _width = 0;
+    int _descriptionTitleoffsetX = 0;
+    int _descriptionHeight = 1;
     int _itemDisplayWidth = 0;
-    char _selectionSymbolFront='>';
-    char _selectionSymbolEnd  ='<';
-    bool _selectWallSymbol=false;
+    char _selectionSymbolFront = '>';
+    char _selectionSymbolEnd = '<';
+    bool _selectWallSymbol = false;
     string _descriptionTitle;
     vector<string> _titles;
     vector<string> _descriptions;
-    bool _showBox=false;
-    POINT _margin={0,0};
-    POINT _menuMargin={0,0};
+    bool _showBox = false;
+    POINT _margin = {0, 0};
+    POINT _menuMargin = {0, 0};
     WINDOW *_window = NULL;
-    COLORPAIR _colorSelected = { -1, -1 }; 
-    COLORPAIR _colorMenu     = { -1, -1 }; 
-    HORIZONTAL_ALIGNMENT _align=CENTER;
-    SCREEN_ALIGNMENT _screenPosition={TOP, LEFT };
+    COLORPAIR _colorSelected = {-1, -1};
+    COLORPAIR _colorMenu = {-1, -1};
+    HORIZONTAL_ALIGNMENT _align = CENTER;
+    SCREEN_ALIGNMENT _screenPosition = {TOP, LEFT};
     void surroundItemClear(int itemIndex);
     void surroundItemWith(int itemIndex, char front, char back);
     void showItem(unsigned int itemIndex, bool addSpaces);
@@ -79,29 +80,51 @@ private:
     POINT calculateMenuPosition(POINT maxXY, POINT menuWidthHeight);
     vector<string> adjustDescriptionWidths(vector<string> strings, int width);
     int getMenuMinimumDisplayWidth();
-    
+
 public:
-    MenuMaker(vector<string>options, HORIZONTAL_ALIGNMENT align);
+    MenuMaker(vector<string> options, HORIZONTAL_ALIGNMENT align);
     ~MenuMaker();
     int askUser(int startSelection);
     void addItem(string);
     int addItems(vector<string> options, HORIZONTAL_ALIGNMENT align);
-    void setTitle(vector<string>  titleStrings);
+
+    /**
+     * @brief Get menu Item string
+     * 
+     * @param itemIndex 
+     * @return string On success, menu item string.  On fail, an empty string.
+     */
+    string getItem(int itemIndex) { return itemIndex < 0 || itemIndex > ((int)_menuItems.size()) - 1 ? "" : _menuItems[itemIndex]; }
+
+    void setTitle(vector<string> titleStrings);
     void setDescriptionTitle(string descriptionTitle);
-    void setDescriptions(vector<string>  itemDescriptions);
-    void setSurroundingSymbols(char front, char end){  _selectionSymbolFront=front; _selectionSymbolEnd=end; }
-    void setSelectWallSymbol(bool activate=true){_selectWallSymbol=activate;setSurroundingSymbols(' ', ' ');}
-    void setShowBox(bool show)                      { _showBox=show; }
+    void setDescriptions(vector<string> itemDescriptions);
+    void setSurroundingSymbols(char front, char end)
+    {
+        _selectionSymbolFront = front;
+        _selectionSymbolEnd = end;
+    }
+    void setSelectWallSymbol(bool activate = true)
+    {
+        _selectWallSymbol = activate;
+        setSurroundingSymbols(' ', ' ');
+    }
+    void setShowBox(bool show) { _showBox = show; }
     void setMenuColor(COLORPAIR pair);
     void setSelectionColor(COLORPAIR pair);
-    void setAlignment(HORIZONTAL_ALIGNMENT align){ _align=align;}
-    void setPosition(SCREEN_ALIGNMENT screenAlignment){ _screenPosition.horizontal=screenAlignment.horizontal; _screenPosition.vertical = screenAlignment.vertical;}
-    void setMargin(POINT margin){_margin.x=margin.x; _margin.y=margin.y;};
+    void setAlignment(HORIZONTAL_ALIGNMENT align) { _align = align; }
+    void setPosition(SCREEN_ALIGNMENT screenAlignment)
+    {
+        _screenPosition.horizontal = screenAlignment.horizontal;
+        _screenPosition.vertical = screenAlignment.vertical;
+    }
+    void setMargin(POINT margin)
+    {
+        _margin.x = margin.x;
+        _margin.y = margin.y;
+    };
     void setWidth(int width);
-    void setDescriptionTitleOffsetX(int offsetX){_descriptionTitleoffsetX=offsetX;};
-    
+    void setDescriptionTitleOffsetX(int offsetX) { _descriptionTitleoffsetX = offsetX; };
 };
-
-
 
 #endif
