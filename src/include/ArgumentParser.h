@@ -19,7 +19,7 @@ enum COLOR_OPTIONS
     BG_SEL
 };
 
-enum ALIGNMENT_CHECK{
+enum ALIGNMENT_CHECK {
     HORIZONTAL_KEYWORD,
     VERTICAL_KEYWORD
 };
@@ -27,10 +27,10 @@ enum ALIGNMENT_CHECK{
 class ArgumentParser
 {
 private:
-    vector<string> _arguments;
-    vector<string> _menuItems;
-    vector<string> _titles;
-    vector<string> _itemDescription;
+    vector< string > _arguments;
+    vector< string > _menuItems;
+    vector< string > _titles;
+    vector< string > _itemDescription;
     string _descriptionTitle;
     bool _optHelp = false;
     bool _optInvalid = false;
@@ -41,39 +41,87 @@ private:
     int _width=0;
     int _descriptionTitleOffsetX=0;
     HORIZONTAL_ALIGNMENT _alignment = LEFT;
-    SCREEN_ALIGNMENT _optPos={TOP, LEFT };
-    POINT _optMargin={0,0};
+    SCREEN_ALIGNMENT _optPos={ TOP, LEFT };
+    POINT _optMargin={ 0, 0 };
     string _errorString;
     char _selectSymbolFront = '*';
     char _selectSymbolEnd   = '*';
-    COLORPAIR _colorMenu     = { -1, -1 }; 
-    COLORPAIR _colorSelected = { -1, -1 }; 
+    COLORPAIR _colorMenu     = { -1, -1 };
+    COLORPAIR _colorSelected = { -1, -1 };
     void parseArguments();
-    bool getColorOptionColor(COLOR_OPTIONS cOption, string color);
-    int getAlignKeywordValue(string option, ALIGNMENT_CHECK check);
-    int getNumberValue(string option);
+    bool getColorOptionColor( COLOR_OPTIONS cOption, string color );
+    int getAlignKeywordValue( string option, ALIGNMENT_CHECK check );
+    int getNumberValue( string option );
 public:
-    bool isValid() { return !_optInvalid; }
-    bool isSelectSymbol() { return _optSelectSymbol; }
-    bool isSelectWallSymbol() { return _optSelectWallSymbol; }
-    char getSelectSymbol(bool frontSymbol);
-    string getDescriptionTitle(){return _descriptionTitle;};
-    vector<string> getTitle(){return _titles; }
-    vector<string> getMenuOptionsDescription(){return _itemDescription; }
-    COLORPAIR getMenuColor()    { return _colorMenu;     }
-    COLORPAIR getSelectedColor(){ return _colorSelected;}
-    POINT getMargin(){return _optMargin;}
-    int getWidth(){return _width; }
-    int getDescriptionTitleOffsetX(){return _descriptionTitleOffsetX; }
-    bool isPrintHelp() { return _optHelp; }
-    bool isQuiet() { return _optQuiet; }
-    bool isBox() { return _optBox; }
+    bool isValid()
+    {
+        return !_optInvalid;
+    }
+    bool isSelectSymbol()
+    {
+        return _optSelectSymbol;
+    }
+    bool isSelectWallSymbol()
+    {
+        return _optSelectWallSymbol;
+    }
+    char getSelectSymbol( bool frontSymbol );
+    string getDescriptionTitle()
+    {
+        return _descriptionTitle;
+    };
+    vector< string > getTitle()
+    {
+        return _titles;
+    }
+    vector< string > getMenuOptionsDescription()
+    {
+        return _itemDescription;
+    }
+    COLORPAIR getMenuColor()
+    {
+        return _colorMenu;
+    }
+    COLORPAIR getSelectedColor()
+    {
+        return _colorSelected;
+    }
+    POINT getMargin()
+    {
+        return _optMargin;
+    }
+    int getWidth()
+    {
+        return _width;
+    }
+    int getDescriptionTitleOffsetX()
+    {
+        return _descriptionTitleOffsetX;
+    }
+    bool isPrintHelp()
+    {
+        return _optHelp;
+    }
+    bool isQuiet()
+    {
+        return _optQuiet;
+    }
+    bool isBox()
+    {
+        return _optBox;
+    }
     const char *errorString();
-    ArgumentParser(char const *items[], int itemCount);
-    HORIZONTAL_ALIGNMENT getAlignment(){return _alignment;};
-    SCREEN_ALIGNMENT getPosition(){return _optPos;};
-    
-    vector<string> getMenuOptions();
+    ArgumentParser( char const *items[], int itemCount );
+    HORIZONTAL_ALIGNMENT getAlignment()
+    {
+        return _alignment;
+    };
+    SCREEN_ALIGNMENT getPosition()
+    {
+        return _optPos;
+    };
+
+    vector< string > getMenuOptions();
     ~ArgumentParser();
 };
 

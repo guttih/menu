@@ -19,5 +19,6 @@
     "cSpell.words": [
         "lncursesw",
         "lstdc"
-    ]
+    ],
+    "cpp.gepper.shellExecute.OnSave.Command": "~/repos/bin/uncrust.sh  \"{{__FILE_PATH__}}\" \"{{__FILE_NAME__}}\""
 }
