@@ -1,27 +1,21 @@
-# menu
-C++ terminal application for usage in bash files to ask the user 
-to select between options.
+# Menu
 
-## Return values
-If nothing is selected the the return value is 0, if something 
-is selected then the return value is bigger than 0.
+A C++ terminal application for use in Bash scripts to ask the user to select between options using an interactive `ncurses` UI.
 
-### Usage
-    Provide the available options in a double quoted parameters. 
-    
- ```bash
-declare exe="out/menu"
+## 📦 Features
 
-if [ ! -f "$exe" ]; then  echo "Error excutable does not exist"; exit 1; fi;
+- Simple terminal menu using arrow key navigation
+- Designed for Bash integration
+- UTF-8 friendly (supports Icelandic characters, etc.)
+- Returns selected option index as exit code
 
+---
 
-$exe  -lines "Option 1" "Option two"  "And some word in Icelandic, á íslensku"
-case $? in
+## 🔧 Build Instructions (Ubuntu)
 
-    0) echo "Nothing was selected" ;;
+### 1. Install dependencies
 
-    *) echo "Option $? was selected"
-;;
-esac
- ```
+```bash
+sudo apt update
+sudo apt install build-essential libncurses5-dev libncursesw5-dev
 
