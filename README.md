@@ -63,6 +63,16 @@ make cleandep
 
 ---
 
+## Build Instructions (fedora)
+### 1. Install dependencies
+
+```bash
+sudo dnf install make gcc-c++ ncurses-devel
+
+```
+
+rest, same as Ubuntu I guess
+
 ## 🛠 Troubleshooting
 
 - If you get `Error executable does not exist` when running `test.sh`, make sure you’ve run `make` successfully and `out/menu` exists.
