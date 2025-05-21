@@ -5,4 +5,4 @@ Helpful things to know when developing the menu.
 == Useful commands
 
 [source, shell]
- find . -type f ! -path "./.git/*" -print
+ find . -type f ! -path "./.git/*" ! -path "./.vscode/*" -print
